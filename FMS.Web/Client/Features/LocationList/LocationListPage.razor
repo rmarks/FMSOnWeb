@@ -1,0 +1,38 @@
+﻿@page "/locations"
+@inject HttpClient Http
+
+<div class="container">
+    @if (_locations == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Asukoha liik</th>
+                    <th>Asukoht</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var location in _locations)
+                {
+                    <tr>
+                        <td>@location.LocationTypeName</td>
+                        <td>@location.LocationName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private IEnumerable<LocationListItemDto> _locations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _locations = await Http.GetFromJsonAsync<IEnumerable<LocationListItemDto>>("api/locations");
+    }
+}
