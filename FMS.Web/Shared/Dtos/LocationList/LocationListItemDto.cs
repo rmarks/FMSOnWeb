@@ -3,7 +3,16 @@
     public class LocationListItemDto
     {
         public int LocationId { get; set; }
-        public string LocationTypeName { get; set; }
+
+        public int LocationTypeId { get; set; }
+
+        public string LocationCode { get; set; }
         public string LocationName { get; set; }
+        
+        public int TotalCount { get; set; }
+        
+        public int TotalStockQuantity { get; set; }
+        public int TotalReservedQuantity { get; set; }
+        public int TotalFreeQuantity => TotalStockQuantity - TotalReservedQuantity;
     }
 }

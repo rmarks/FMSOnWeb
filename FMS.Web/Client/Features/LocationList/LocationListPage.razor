@@ -1,7 +1,13 @@
 ﻿@page "/locations"
 @inject HttpClient Http
+@inject NavigationManager NavManager
+@implements IDisposable
 
 <div class="container">
+    <h3>Asukohad</h3>
+
+    <LocationFilter />
+
     @if (_locations == null)
     {
         <p>Loading...</p>
@@ -11,16 +17,31 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Asukoha liik</th>
-                    <th>Asukoht</th>
+                    <th>Kood</th>
+                    <th>Nimi</th>
+                    <th style="text-align: right;">Tooteid</th>
+                    <th style="text-align: right;">Laos kokku</th>
+                    <th style="text-align: right;">Reserv. kokku</th>
+                    <th style="text-align: right;">Vabu kokku</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var location in _locations)
                 {
                     <tr>
-                        <td>@location.LocationTypeName</td>
-                        <td>@location.LocationName</td>
+                        <td style="width: 15%;">@location.LocationCode</td>
+                        <td style="width: 25%;">@location.LocationName</td>
+                        <td style="width: 15%; text-align: right;">@ParseSpaceInsteadOfZero(location.TotalCount)</td>
+                        <td style="width: 15%; text-align: right;">@ParseSpaceInsteadOfZero(location.TotalStockQuantity)</td>
+                        <td style="width: 15%; text-align: right;">@ParseSpaceInsteadOfZero(location.TotalReservedQuantity)</td>
+                        <td style="width: 15%; text-align: right;">@ParseSpaceInsteadOfZero(location.TotalFreeQuantity)</td>
+                        <td>
+                            <div class="d-flex">
+                                <button class="btn btn-info btn-sm mr-3">Laoseis</button>
+                                <button class="btn btn-warning btn-sm">Muuda</button>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -30,9 +51,52 @@
 
 @code {
     private IEnumerable<LocationListItemDto> _locations;
+    private IEnumerable<LocationListItemDto> _cachedLocations;
 
     protected override async Task OnInitializedAsync()
     {
         _locations = await Http.GetFromJsonAsync<IEnumerable<LocationListItemDto>>("api/locations");
+        _cachedLocations = _locations;
+
+        NavManager.LocationChanged += HandleLocationChanged;
+        UpdateFilters();
     }
+
+    #region helpers
+    private void UpdateFilters()
+    {
+        var filters = new List<Func<LocationListItemDto, bool>>();
+
+        NavManager.TryGetQueryString<int>("locationtypeid", out var locationTypeId);
+
+        if (locationTypeId > 0)
+        {
+            filters.Add(l => l.LocationTypeId == locationTypeId);
+        }
+
+        if (filters.Any())
+        {
+            _locations = _cachedLocations.Where(l => filters.All(filter => filter(l)));
+        }
+        else
+        {
+            _locations = _cachedLocations;
+        }
+
+        StateHasChanged();
+    }
+
+    string ParseSpaceInsteadOfZero(int someInt) => someInt > 0 ? someInt.ToString() : "";
+    #endregion
+
+    #region event handlers
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs args)
+    {
+        UpdateFilters();
+    }
+    #endregion
+
+    #region IDisposable
+    public void Dispose() => NavManager.LocationChanged -= HandleLocationChanged;
+    #endregion
 }

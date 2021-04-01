@@ -19,7 +19,7 @@ namespace FMS.Web.Server.Controllers
             _context = context;
         }
 
-        // GET: api/Locations
+        // GET: api/locations
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationListItemDto>>> GetLocations()
         {
@@ -28,8 +28,23 @@ namespace FMS.Web.Server.Controllers
                 .Select(l => new LocationListItemDto
                 {
                     LocationId = l.Id,
-                    LocationTypeName = l.LocationType.Name,
+                    LocationTypeId = l.LocationTypeId,
+                    LocationCode = l.Code,
                     LocationName = l.Name
+                })
+                .ToListAsync();
+        }
+
+        // GET: api/locations/dropdowns
+        [HttpGet("dropdowns")]
+        public async Task<ActionResult<IEnumerable<LocationTypeDropdownItemDto>>> GetDropdowns()
+        {
+            return await _context.LocationTypes
+                .AsNoTracking()
+                .Select(l => new LocationTypeDropdownItemDto
+                {
+                    Id = l.Id,
+                    Name = l.Name
                 })
                 .ToListAsync();
         }

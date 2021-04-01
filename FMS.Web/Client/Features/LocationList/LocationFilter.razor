@@ -1,0 +1,56 @@
+﻿@inject HttpClient Http
+@inject NavigationManager NavManager
+
+<div class="d-flex justify-content-end mb-3 align-items-baseline">
+    <label class="mr-3">Asukoha liik</label>
+    <select class="form-control" style="width: 200px;"
+            value="@_locationTypeId"
+            @onchange="HandleLocationTypeChange">
+        <option value="0">-- Kõik --</option>
+        @if (_locationTypes != null)
+        {
+            @foreach (var item in _locationTypes)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        }
+    </select>
+</div>
+
+@code {
+    private int _locationTypeId;
+    private IEnumerable<LocationTypeDropdownItemDto> _locationTypes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _locationTypes = await Http.GetFromJsonAsync<IEnumerable<LocationTypeDropdownItemDto>>("api/locations/dropdowns");
+    }
+
+    private void HandleLocationTypeChange(ChangeEventArgs args)
+    {
+        if (int.TryParse(args.Value.ToString(), out var value))
+        {
+            _locationTypeId = value;
+            FilterLocations();
+        }
+    }
+
+    private void FilterLocations()
+    {
+        var queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        if (_locationTypeId > 0)
+        {
+            queryString.Add("locationtypeid", _locationTypeId.ToString());
+        }
+
+        if (string.IsNullOrWhiteSpace(queryString.ToString()))
+        {
+            NavManager.NavigateTo("/locations");
+        }
+        else
+        {
+            NavManager.NavigateTo($"/locations?{queryString.ToString()}");
+        }
+    }
+}

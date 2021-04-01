@@ -12,25 +12,25 @@ namespace FMS.DAL
             {
                 new LocationType { Code = "VL", Name = "Valmiskaubaladu" },
                 new LocationType { Code = "KL", Name = "Komisjoniladu" },
-                new LocationType { Code = "PO", Name = "Pood" }
+                new LocationType { Code = "PL", Name = "Poeladu" }
             };
             context.AddRange(locationTypes);
             context.SaveChanges();
 
             var locations = new Location[]
             {
-                new Location { LocationTypeId = 1, Name = "Eesti" },
-                new Location { LocationTypeId = 1, Name = "Eksport" },
-                new Location { LocationTypeId = 1, Name = "Näidiste ladu" },
-                new Location { LocationTypeId = 1, Name = "Kultakeskus" },
-                new Location { LocationTypeId = 1, Name = "Gense" },
-                new Location { LocationTypeId = 1, Name = "Juveel Sverige" },
-                new Location { LocationTypeId = 2, Name = "Levi Design" },
-                new Location { LocationTypeId = 2, Name = "Tallinna Ettevõtlusinkubaatorid" },
-                new Location { LocationTypeId = 3, Name = "Juveeliäri" },
-                new Location { LocationTypeId = 3, Name = "Firmakauplus Järve" },
-                new Location { LocationTypeId = 3, Name = "Firmakauplus Rocca al Mare" },
-                new Location { LocationTypeId = 3, Name = "Firmakauplus Kristiine" }
+                new Location { LocationTypeId = 1, Code = "VL-EST", Name = "Eesti" },
+                new Location { LocationTypeId = 1, Code = "VL-EKSP", Name = "Eksport" },
+                new Location { LocationTypeId = 1, Code = "VL-NÄIDIS", Name = "Näidiste ladu" },
+                new Location { LocationTypeId = 1, Code = "VL-KULTAK", Name = "Kultakeskus" },
+                new Location { LocationTypeId = 1, Code = "VL-GENSE", Name = "Gense" },
+                new Location { LocationTypeId = 1, Code = "VL-JUVSVE", Name = "Juveel Sverige" },
+                new Location { LocationTypeId = 2, Code = "KL-LEVI", Name = "Levi Design" },
+                new Location { LocationTypeId = 2, Code = "KL-INKUB", Name = "Tallinna Ettevõtlusinkubaatorid" },
+                new Location { LocationTypeId = 3, Code = "PL-JUVÄRI", Name = "Juveeliäri" },
+                new Location { LocationTypeId = 3, Code = "PL-JÄRVE", Name = "Firmakauplus Järve" },
+                new Location { LocationTypeId = 3, Code = "PL-ROCCA", Name = "Firmakauplus Rocca al Mare" },
+                new Location { LocationTypeId = 3, Code = "PL-KRISTE", Name = "Firmakauplus Kristiine" }
             };
             context.AddRange(locations);
             context.SaveChanges();
