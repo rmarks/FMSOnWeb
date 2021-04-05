@@ -1,4 +1,7 @@
 ﻿using FMS.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FMS.DAL
 {
@@ -17,6 +20,7 @@ namespace FMS.DAL
             context.AddRange(locationTypes);
             context.SaveChanges();
 
+            // 12 locations
             var locations = new Location[]
             {
                 new Location { LocationTypeId = 1, Code = "VL-EST", Name = "Eesti" },
@@ -34,6 +38,61 @@ namespace FMS.DAL
             };
             context.AddRange(locations);
             context.SaveChanges();
+
+            // 27 products
+            var products = new Product[]
+            {
+                new Product { Code = "00020073", Name = ""},
+                new Product { Code = "00020282", Name = ""},
+                new Product { Code = "00020355", Name = ""},
+                new Product { Code = "00020446", Name = ""},
+                new Product { Code = "00020616", Name = ""},
+                new Product { Code = "00020829", Name = ""},
+                new Product { Code = "00021477", Name = ""},
+                new Product { Code = "00021526", Name = ""},
+                new Product { Code = "00021679", Name = ""},
+                new Product { Code = "00022261", Name = ""},
+                new Product { Code = "03020916", Name = ""},
+                new Product { Code = "03021035", Name = ""},
+                new Product { Code = "03021717", Name = ""},
+                new Product { Code = "03022187", Name = ""},
+                new Product { Code = "03022335", Name = ""},
+                new Product { Code = "03030232", Name = ""},
+                new Product { Code = "03030796", Name = ""},
+                new Product { Code = "03031077", Name = ""},
+                new Product { Code = "03031752", Name = ""},
+                new Product { Code = "03031528", Name = ""},
+                new Product { Code = "03090239", Name = ""},
+                new Product { Code = "03090662", Name = ""},
+                new Product { Code = "03090797", Name = ""},
+                new Product { Code = "03090820", Name = ""},
+                new Product { Code = "03092347", Name = ""},
+                new Product { Code = "03092477", Name = ""},
+                new Product { Code = "03098704", Name = ""}
+            };
+            context.AddRange(products);
+            context.SaveChanges();
+
+            var inventory = new List<Inventory>();
+            var random = new Random();
+            foreach (var location in locations)
+            {
+                var productIds = Enumerable.Range(1, random.Next(1, 27));
+                foreach (int productId in productIds)
+                {
+                    int stockQuantity = random.Next(1, 10);
+                    int reservedQuantity = (stockQuantity % 2) == 0 ? random.Next(1, stockQuantity) : 0;
+                    
+                    inventory.Add(new Inventory 
+                    { 
+                        LocationId = location.Id, 
+                        ProductId = productId, 
+                        StockQuantity = stockQuantity, 
+                        ReservedQuantity = reservedQuantity 
+                    });
+                }
+                
+            }
         }
     }
 }

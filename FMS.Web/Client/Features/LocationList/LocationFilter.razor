@@ -24,6 +24,9 @@
     protected override async Task OnInitializedAsync()
     {
         _locationTypes = await Http.GetFromJsonAsync<IEnumerable<LocationTypeDropdownItemDto>>("api/locations/dropdowns");
+
+        NavManager.TryGetQueryString<int>("locationtypeid", out var locationTypeId);
+        _locationTypeId = locationTypeId;
     }
 
     private void HandleLocationTypeChange(ChangeEventArgs args)
