@@ -38,7 +38,8 @@
                         <td style="width: 15%; text-align: right;">@ParseSpaceInsteadOfZero(location.TotalFreeQuantity)</td>
                         <td>
                             <div class="d-flex">
-                                <button class="btn btn-info btn-sm mr-3">Laoseis</button>
+                                <button class="btn btn-info btn-sm mr-3"
+                                        @onclick="@(() => NavManager.NavigateTo($"locations/{location.LocationId}/inventory"))">Laoseis</button>
                                 <button class="btn btn-warning btn-sm">Muuda</button>
                             </div>
                         </td>

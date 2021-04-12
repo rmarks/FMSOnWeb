@@ -1,0 +1,35 @@
+﻿@page "/locations/{Id:int}/inventory"
+@inject HttpClient Http
+
+<div class="container-fluid">
+    <h3>Asukoht</h3>
+
+    <h4 class="bg-light p-2 mt-3 mb-5 text-secondary">Filter</h4>
+
+    @if (_inventory == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="grid">
+            @foreach (var item in _inventory)
+            {
+                <ProductCard Item="item" />
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+    private IEnumerable<LocationInventoryListItemDto> _inventory;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _inventory = await Http.GetFromJsonAsync<IEnumerable<LocationInventoryListItemDto>>($"api/locationinventory/{Id}");
+    }
+}

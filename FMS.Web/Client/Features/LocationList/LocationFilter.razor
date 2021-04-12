@@ -3,7 +3,7 @@
 
 <div class="d-flex justify-content-end mb-3 align-items-baseline">
     <label class="mr-3">Asukoha liik</label>
-    <select class="form-control" style="width: 200px;"
+    <select class="form-control" style="width: 13rem;"
             value="@_locationTypeId"
             @onchange="HandleLocationTypeChange">
         <option value="0">-- Kõik --</option>
@@ -25,8 +25,8 @@
     {
         _locationTypes = await Http.GetFromJsonAsync<IEnumerable<LocationTypeDropdownItemDto>>("api/locations/dropdowns");
 
-        NavManager.TryGetQueryString<int>("locationtypeid", out var locationTypeId);
-        _locationTypeId = locationTypeId;
+        NavManager.TryGetQueryString<int>("locationtypeid", out var value);
+        _locationTypeId = value;
     }
 
     private void HandleLocationTypeChange(ChangeEventArgs args)
@@ -51,9 +51,7 @@
         {
             NavManager.NavigateTo("/locations");
         }
-        else
-        {
-            NavManager.NavigateTo($"/locations?{queryString.ToString()}");
-        }
+
+        NavManager.NavigateTo($"/locations?{queryString.ToString()}");
     }
 }

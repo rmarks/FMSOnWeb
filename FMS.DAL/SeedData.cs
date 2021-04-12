@@ -42,33 +42,33 @@ namespace FMS.DAL
             // 27 products
             var products = new Product[]
             {
-                new Product { Code = "00020073", Name = ""},
-                new Product { Code = "00020282", Name = ""},
-                new Product { Code = "00020355", Name = ""},
-                new Product { Code = "00020446", Name = ""},
-                new Product { Code = "00020616", Name = ""},
-                new Product { Code = "00020829", Name = ""},
-                new Product { Code = "00021477", Name = ""},
-                new Product { Code = "00021526", Name = ""},
-                new Product { Code = "00021679", Name = ""},
-                new Product { Code = "00022261", Name = ""},
-                new Product { Code = "03020916", Name = ""},
-                new Product { Code = "03021035", Name = ""},
-                new Product { Code = "03021717", Name = ""},
-                new Product { Code = "03022187", Name = ""},
-                new Product { Code = "03022335", Name = ""},
-                new Product { Code = "03030232", Name = ""},
-                new Product { Code = "03030796", Name = ""},
-                new Product { Code = "03031077", Name = ""},
-                new Product { Code = "03031752", Name = ""},
-                new Product { Code = "03031528", Name = ""},
-                new Product { Code = "03090239", Name = ""},
-                new Product { Code = "03090662", Name = ""},
-                new Product { Code = "03090797", Name = ""},
-                new Product { Code = "03090820", Name = ""},
-                new Product { Code = "03092347", Name = ""},
-                new Product { Code = "03092477", Name = ""},
-                new Product { Code = "03098704", Name = ""}
+                new Product { Code = "00020073", Name = "Sõrmus nat. safiir"},
+                new Product { Code = "00020282", Name = "Sõrmus naturaalne safiir, teemant"},
+                new Product { Code = "00020355", Name = "Sõrmus naturaalne granaat"},
+                new Product { Code = "00020446", Name = "Sõrmus pärl valge"},
+                new Product { Code = "00020616", Name = "Sõrmus nat. granaat"},
+                new Product { Code = "00020829", Name = "Sõrmus naturaalne granaat"},
+                new Product { Code = "00021477", Name = "Sõrmus valge pärl"},
+                new Product { Code = "00021526", Name = "Sõrmus naturaalne smaragd"},
+                new Product { Code = "00021679", Name = "Sõrmus nat. topaas"},
+                new Product { Code = "00022261", Name = "Sõrmus nat. granaat"},
+                new Product { Code = "03020916", Name = "Sõrmus sünt. aleksandriit"},
+                new Product { Code = "03021035", Name = "Sõrmus CZ must"},
+                new Product { Code = "03021717", Name = "Sõrmus sünt. ametüst"},
+                new Product { Code = "03022187", Name = "Sõrmus CZ"},
+                new Product { Code = "03022335", Name = "Sõrmus sünt. aleksandriit"},
+                new Product { Code = "03030232", Name = "Kõrvarõngad CZ valge"},
+                new Product { Code = "03030796", Name = "Kõrvarõngad CZ valge"},
+                new Product { Code = "03031077", Name = "Kõrvarõngad CZ shampanja"},
+                new Product { Code = "03031752", Name = "Kõrvarõngad CZ sampanja"},
+                new Product { Code = "03031528", Name = "Kõrvarõngad CZ"},
+                new Product { Code = "03090239", Name = "Ripats CZ sinine"},
+                new Product { Code = "03090662", Name = "Ripats sünt. aleksandriit"},
+                new Product { Code = "03090797", Name = "Ripats CZ valge"},
+                new Product { Code = "03090820", Name = "Ripats CZ valge"},
+                new Product { Code = "03092347", Name = "Ripats CZ lavender"},
+                new Product { Code = "03092477", Name = "Ripats CZ"},
+                new Product { Code = "03098704", Name = "Ripats Hobuseraud CZ"}
             };
             context.AddRange(products);
             context.SaveChanges();
@@ -80,8 +80,22 @@ namespace FMS.DAL
                 var productIds = Enumerable.Range(1, random.Next(1, 27));
                 foreach (int productId in productIds)
                 {
-                    int stockQuantity = random.Next(1, 10);
-                    int reservedQuantity = (stockQuantity % 2) == 0 ? random.Next(1, stockQuantity) : 0;
+                    int stockQuantity = 0;
+                    int reservedQuantity = 0;
+
+                    if (random.Next(1, 10) < 7)
+                    {
+                        stockQuantity = random.Next(1, 10);
+
+                        if (random.Next(1, 10) < 8)
+                        {
+                            reservedQuantity = (stockQuantity % 2) == 0 ? random.Next(1, stockQuantity) : 0;
+                        }
+                        else
+                        {
+                            reservedQuantity = stockQuantity;
+                        }
+                    }
                     
                     inventory.Add(new Inventory 
                     { 
@@ -93,6 +107,8 @@ namespace FMS.DAL
                 }
                 
             }
+            context.AddRange(inventory);
+            context.SaveChanges();
         }
     }
 }

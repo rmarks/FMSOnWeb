@@ -1,0 +1,25 @@
+﻿<div class="card" style="width: 12.5rem;">
+    <img class="card-img" src="@ImagePath">
+    <div class="card-img-overlay p-1 d-flex flex-column justify-content-between">
+        <h6 class="m-0 text-muted">@Item.ProductName</h6>
+        <div class="d-flex justify-content-between align-items-end">
+            <h5 class="m-0">@Item.ProductCode</h5>
+            <button class="btn btn-sm text-white" style="background-color: @ButtonColor;"
+                    @onclick="@(async () => await OnSelected.InvokeAsync(Item))">
+                Laos: @Item.FreeQuantity
+            </button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public LocationInventoryListItemDto Item { get; set; }
+
+    [Parameter]
+    public EventCallback<LocationInventoryListItemDto> OnSelected { get; set; }
+
+    private string ImagePath => $"img/products/{Item.ProductCode}.jpg";
+    private string ButtonColor => Item.FreeQuantity > 0 ? "mediumseagreen" : (Item.ReservedQuantity > 0 ? "orange" : "firebrick");
+}

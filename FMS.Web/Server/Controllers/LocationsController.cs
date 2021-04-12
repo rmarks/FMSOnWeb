@@ -30,7 +30,8 @@ namespace FMS.Web.Server.Controllers
                     LocationId = l.Id,
                     LocationTypeId = l.LocationTypeId,
                     LocationCode = l.Code,
-                    LocationName = l.Name
+                    LocationName = l.Name,
+                    TotalCount = l.Inventory.Count()
                 })
                 .ToListAsync();
         }
