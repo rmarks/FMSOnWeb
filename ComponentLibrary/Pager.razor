@@ -1,0 +1,59 @@
+﻿@if (Result != null)
+{
+    <div class="d-flex">
+        @if (Result.PageCount > 1)
+        {
+            <ul class="pagination">
+                <li class="page-item @(IsFirstPage ? "disabled" : "")">
+                    <button class="page-link" @onclick="@(() => HandlePageChanged(1))">&laquo;</button>
+                </li>
+
+                @for (var i = StartIndex; i <= FinishIndex; i++)
+                {
+                    @if (i == Result.CurrentPage)
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        var currentIndex = i;
+                        <li class="page-item">
+                            <button class="page-link" @onclick="@(() => HandlePageChanged(currentIndex))">@i</button>
+                        </li>
+                    }
+                }
+
+                <li class="page-item @(IsLastPage ? "disabled" : "")">
+                    <button class="page-link" @onclick="@(() => HandlePageChanged(Result.PageCount))">&raquo;</button>
+                </li>
+            </ul>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public PagedResultBase Result { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPageChanged { get; set; }
+
+    private int StartIndex { get; set; }
+    private int FinishIndex { get; set; }
+
+    private bool IsFirstPage => Result.CurrentPage == 1;
+    private bool IsLastPage => Result.CurrentPage == Result.PageCount;
+
+    protected override void OnParametersSet()
+    {
+        StartIndex = Math.Max(Result.CurrentPage - 5, 1);
+        FinishIndex = Math.Min(Result.CurrentPage + 5, Result.PageCount);
+    }
+
+    private async Task HandlePageChanged(int pageNo)
+    {
+        await OnPageChanged.InvokeAsync(pageNo);
+    }
+}

@@ -1,10 +1,9 @@
 ﻿using FMS.DAL;
+using FMS.Web.Server.Extensions;
+using FMS.Web.Shared;
 using FMS.Web.Shared.Dtos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +22,7 @@ namespace FMS.Web.Server.Controllers
 
         // GET: api/locationinventory/locationid
         [HttpGet("{locationId}")]
-        public async Task<ActionResult<IEnumerable<LocationInventoryListItemDto>>> GetLocationInventory(int locationId)
+        public async Task<ActionResult<PagedResult<LocationInventoryListItemDto>>> GetLocationInventory(int locationId, int page, int pageSize)
         {
             return await _context.Inventory
                 .AsNoTracking()
@@ -39,7 +38,7 @@ namespace FMS.Web.Server.Controllers
                     ReservedQuantity = i.ReservedQuantity
                 })
                 .OrderBy(l => l.ProductCode)
-                .ToListAsync();
+                .GetPagedAsync(page, pageSize);
         }
     }
 }

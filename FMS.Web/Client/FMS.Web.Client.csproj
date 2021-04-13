@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ComponentLibrary\ComponentLibrary.csproj" />
     <ProjectReference Include="..\Shared\FMS.Web.Shared.csproj" />
   </ItemGroup>
 
