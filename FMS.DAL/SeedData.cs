@@ -73,8 +73,9 @@ namespace FMS.DAL
             context.AddRange(products);
             context.SaveChanges();
 
-            var inventory = new List<Inventory>();
             var random = new Random();
+
+            var inventory = new List<Inventory>();
             foreach (var location in locations)
             {
                 var productIds = Enumerable.Range(1, random.Next(1, 27));
@@ -109,6 +110,32 @@ namespace FMS.DAL
             }
             context.AddRange(inventory);
             context.SaveChanges();
+
+            // 5 price lists
+            var priceLists = new PriceList[]
+            {
+                new PriceList { Name = "Eesti", CurrencyCode = "EUR" },
+                new PriceList { Name = "Eksport", CurrencyCode = "EUR" },
+                new PriceList { Name = "Soome", CurrencyCode = "EUR" },
+                new PriceList { Name = "Gense", CurrencyCode = "SEK" },
+                new PriceList { Name = "Juveel Sverige", CurrencyCode = "SEK" },
+            };
+            context.AddRange(priceLists);
+            context.SaveChanges();
+
+            var prices = new List<Price>();
+            foreach (var priceList in priceLists)
+            {
+                foreach (var product in products)
+                {
+                    prices.Add(new Price
+                    {
+                        ProductId = product.Id,
+                        PriceListId = priceList.Id,
+                        UnitPrice = priceList.CurrencyCode == "EUR" ? random.Next(100, 400) : (random.Next(1, 10) < 6 ? random.Next(1000, 5000) : 0)
+                    });
+                }
+            }
         }
     }
 }

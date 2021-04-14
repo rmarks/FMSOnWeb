@@ -1,0 +1,18 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FMS.Domain.Models
+{
+    public class Price
+    {
+        public int Id { get; set; }
+
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+
+        public int PriceListId { get; set; }
+        public PriceList PriceList { get; set; }
+
+        [Column(TypeName = "decimal(9, 2)")]
+        public decimal UnitPrice { get; set; }
+    }
+}
