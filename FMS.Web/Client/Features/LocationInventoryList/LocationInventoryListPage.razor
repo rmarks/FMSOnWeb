@@ -12,10 +12,12 @@
     }
     else
     {
+        <ProductDetails Item="@SelectedItem" />
+
         <div class="grid mb-5">
             @foreach (var item in _inventory.Results)
             {
-                <ProductCard Item="item" />
+                <ProductCard Item="@item" OnSelected="HandleProductSelected" />
             }
         </div>
 
@@ -29,6 +31,22 @@
 @code {
     private PagedResult<LocationInventoryListItemDto> _inventory;
     private int _pageSize = 18;
+    private LocationInventoryListItemDto _selectedItem;
+
+    private LocationInventoryListItemDto SelectedItem
+    {
+        get
+        {
+            var selectedItem = _selectedItem;
+            
+            if (selectedItem != null)
+            {
+                _selectedItem = null;
+            }
+
+            return selectedItem;
+        }
+    }
 
     [Parameter]
     public int Id { get; set; }
@@ -46,5 +64,10 @@
     private async Task HandlePageChanged(int page)
     {
         await LoadInventory(page);
+    }
+
+    private void HandleProductSelected(LocationInventoryListItemDto item)
+    {
+        _selectedItem = item;
     }
 }

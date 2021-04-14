@@ -1,0 +1,66 @@
+﻿<div class="drawer-wrapper @(_isOpen ? "slide" : "")">
+    <div class="drawer-mask"></div>
+    <div class="drawer">
+        <div class="drawer-content">
+            @if (Item != null)
+            {
+                <div class="d-flex">
+                    <img src="@ItemImage" style="width: 15.625rem;" />
+                    <div class="d-flex flex-column justify-content-between flex-grow-1 p-3">
+                        <div>
+                            <h4>@Item.ProductCode</h4>
+                            <h6>@Item.ProductName</h6>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-6">Laos:</div>
+                                <div class="col-6">@Item.StockQuantity</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">Reserveeritud:</div>
+                                <div class="col-6">@Item.ReservedQuantity</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">Vaba:</div>
+                                <div class="col-6">@Item.FreeQuantity</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3">
+                    <TabSet>
+                        <Tab Title="Hinnad">
+                            <p class="m-3 text-muted"><em>Hinnad puuduvad</em></p>
+                        </Tab>
+                        <Tab Title="Tellimused">
+                            <p class="m-3 text-muted"><em>Tellimused puuduvad</em></p>
+                        </Tab>
+                        <Tab Title="Liikumised">
+                            <p class="m-3 text-muted"><em>Liikumised puuduvad</em></p>
+                        </Tab>
+                    </TabSet>
+                </div>
+            }
+        </div>
+        <div class="drawer-controls">
+            <button class="btn btn-primary" @onclick="@(() => _isOpen = false)">Sulge</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool _isOpen;
+
+    [Parameter] public LocationInventoryListItemDto Item { get; set; }
+
+    private string ItemImage => $"img/products/{Item.ProductCode}.jpg";
+
+    protected override void OnParametersSet()
+    {
+        if (Item != null)
+        {
+            _isOpen = true;
+        }
+    }
+}
