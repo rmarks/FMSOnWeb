@@ -31,7 +31,6 @@
             <div class="p-3">
                 <TabSet>
                     <Tab Title="Hinnad">
-                        @*<p class="m-3 text-muted"><em>Hinnad puuduvad</em></p>*@
                         <table class="table table-hover">
                             <thead class="thead-light">
                                 <tr>
@@ -72,7 +71,7 @@
     private bool _isOpen;
     private ProductInventoryDetailsDto _details;
 
-    [Parameter] public LocationInventoryListItemDto Item { get; set; }
+    [Parameter] public ProductInventoryInLocationDto Item { get; set; }
 
     private string ItemImage => Item == null ? null : $"img/products/{Item.ProductCode}.jpg";
 

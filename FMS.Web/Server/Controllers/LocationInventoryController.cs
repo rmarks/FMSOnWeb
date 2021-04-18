@@ -22,14 +22,14 @@ namespace FMS.Web.Server.Controllers
 
         // GET: api/locationinventory/locationid
         [HttpGet("{locationId}")]
-        public async Task<ActionResult<PagedResult<LocationInventoryListItemDto>>> GetLocationInventory(int locationId, int page, int pageSize)
+        public async Task<ActionResult<PagedResult<ProductInventoryInLocationDto>>> GetLocationInventory(int locationId, int page, int pageSize)
         {
             return await _context.Inventory
                 .AsNoTracking()
                 .Where(i => i.LocationId == locationId)
-                .Select(i => new LocationInventoryListItemDto
+                .Select(i => new ProductInventoryInLocationDto
                 {
-                    InvnetoryId = i.Id,
+                    InventoryId = i.Id,
                     LocationId = i.LocationId,
                     ProductId = i.ProductId,
                     ProductCode = i.Product.Code,
