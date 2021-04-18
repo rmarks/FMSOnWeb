@@ -128,14 +128,19 @@ namespace FMS.DAL
             {
                 foreach (var product in products)
                 {
-                    prices.Add(new Price
+                    if (priceList.CurrencyCode == "EUR" || (priceList.CurrencyCode == "SEK" && random.Next(1, 10) < 6))
                     {
-                        ProductId = product.Id,
-                        PriceListId = priceList.Id,
-                        UnitPrice = priceList.CurrencyCode == "EUR" ? random.Next(100, 400) : (random.Next(1, 10) < 6 ? random.Next(1000, 5000) : 0)
-                    });
+                        prices.Add(new Price
+                        {
+                            ProductId = product.Id,
+                            PriceListId = priceList.Id,
+                            UnitPrice = priceList.CurrencyCode == "EUR" ? random.Next(100, 400) : random.Next(1000, 5000)
+                        });
+                    }
                 }
             }
+            context.AddRange(prices);
+            context.SaveChanges();
         }
     }
 }
