@@ -1,10 +1,14 @@
 ﻿@page "/locations/{Id:int}/inventory"
 @inject HttpClient Http
+@inject ReturnUrlManager ReturnUrlManager
 
 <div>
-    <h3>Asukoht</h3>
+    <nav class="navbar navbar-dark bg-secondary rounded mb-3">
+        <span class="navbar-brand">Asukoht</span>
+        <NavLink class="btn btn-primary ml-auto" href="@_returnUrl">Tagasi</NavLink>
+    </nav>
 
-    <h4 class="bg-light p-2 mt-3 mb-5 text-secondary">Filter</h4>
+    <h5 class="bg-light p-2 mb-5 text-secondary">Filter</h5>
 
     @if (_inventory == null)
     {
@@ -32,13 +36,14 @@
     private PagedResult<ProductInventoryInLocationDto> _inventory;
     private int _pageSize = 18;
     private ProductInventoryInLocationDto _selectedItem;
+    private string _returnUrl;
 
     private ProductInventoryInLocationDto SelectedItem
     {
         get
         {
             var selectedItem = _selectedItem;
-            
+
             if (selectedItem != null)
             {
                 _selectedItem = null;
@@ -53,14 +58,18 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _returnUrl = ReturnUrlManager.ReturnUrl;
         await LoadInventory(1);
     }
 
+    #region helpers
     private async Task LoadInventory(int page)
     {
         _inventory = await Http.GetFromJsonAsync<PagedResult<ProductInventoryInLocationDto>>($"api/locationinventory/{Id}?page={page}&pagesize={_pageSize}");
     }
+    #endregion
 
+    #region event handlers
     private async Task HandlePageChanged(int page)
     {
         await LoadInventory(page);
@@ -70,4 +79,5 @@
     {
         _selectedItem = item;
     }
+    #endregion
 }

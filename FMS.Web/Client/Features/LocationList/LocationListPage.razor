@@ -1,12 +1,15 @@
 ﻿@page "/locations"
 @inject HttpClient Http
 @inject NavigationManager NavManager
+@inject ReturnUrlManager ReturnUrlManager
 @implements IDisposable
 
 <div class="container">
-    <h3>Asukohad</h3>
+    <nav class="navbar navbar-dark bg-secondary rounded mb-3">
+        <span class="navbar-brand">Asukohad</span>
+    </nav>
 
-    <LocationFilter />
+    <LocationFilter @ref="_locationFilter" />
 
     @if (_locations == null)
     {
@@ -39,7 +42,9 @@
                         <td>
                             <div class="d-flex">
                                 <button class="btn btn-info btn-sm mr-3"
-                                        @onclick="@(() => NavManager.NavigateTo($"locations/{location.LocationId}/inventory"))">Laoseis</button>
+                                        @onclick="@(() => HandleInventorySelected(location.LocationId))">
+                                    Laoseis
+                                </button>
                                 <button class="btn btn-warning btn-sm">Muuda</button>
                             </div>
                         </td>
@@ -53,6 +58,7 @@
 @code {
     private IEnumerable<LocationListItemDto> _locations;
     private IEnumerable<LocationListItemDto> _cachedLocations;
+    private LocationFilter _locationFilter;
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,6 +66,7 @@
         _cachedLocations = _locations;
 
         NavManager.LocationChanged += HandleLocationChanged;
+
         UpdateFilters();
     }
 
@@ -83,8 +90,6 @@
         {
             _locations = _cachedLocations;
         }
-
-        StateHasChanged();
     }
 
     string ParseSpaceInsteadOfZero(int someInt) => someInt > 0 ? someInt.ToString() : "";
@@ -94,6 +99,21 @@
     private void HandleLocationChanged(object sender, LocationChangedEventArgs args)
     {
         UpdateFilters();
+
+        //for cases where the page was already open, but still the menu item of the same page was clicked
+        //then synchronization (initialization) of the filter with the url of the menu item is needed
+        if (args.IsNavigationIntercepted)
+        {
+            _locationFilter.Refresh();
+        }
+
+        StateHasChanged();
+    }
+
+    private void HandleInventorySelected(int locationId)
+    {
+        ReturnUrlManager.ReturnUrl = NavManager.ToBaseRelativePath(NavManager.Uri);
+        NavManager.NavigateTo($"locations/{locationId}/inventory");
     }
     #endregion
 

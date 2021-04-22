@@ -1,8 +1,8 @@
 ﻿@inject HttpClient Http
 @inject NavigationManager NavManager
 
-<div class="d-flex justify-content-end mb-3 align-items-baseline">
-    <label class="mr-3">Asukoha liik</label>
+<div class="d-flex justify-content-end align-items-baseline bg-light p-2 mb-3">
+    <label class="mr-3 text-secondary">Asukoha liik</label>
     <select class="form-control" style="width: 13rem;"
             value="@_locationTypeId"
             @onchange="HandleLocationTypeChange">
@@ -25,8 +25,7 @@
     {
         _locationTypes = await Http.GetFromJsonAsync<IEnumerable<LocationTypeDropdownItemDto>>("api/locations/dropdowns");
 
-        NavManager.TryGetQueryString<int>("locationtypeid", out var value);
-        _locationTypeId = value;
+        InitializeFilter();
     }
 
     private void HandleLocationTypeChange(ChangeEventArgs args)
@@ -53,5 +52,17 @@
         }
 
         NavManager.NavigateTo($"/locations?{queryString.ToString()}");
+    }
+
+    private void InitializeFilter()
+    {
+        NavManager.TryGetQueryString<int>("locationtypeid", out var value);
+        _locationTypeId = value;
+    }
+
+    public void Refresh()
+    {
+        InitializeFilter();
+        StateHasChanged();
     }
 }

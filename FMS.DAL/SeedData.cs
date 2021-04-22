@@ -34,7 +34,7 @@ namespace FMS.DAL
                 new Location { LocationTypeId = 3, Code = "PL-JUVÄRI", Name = "Juveeliäri" },
                 new Location { LocationTypeId = 3, Code = "PL-JÄRVE", Name = "Firmakauplus Järve" },
                 new Location { LocationTypeId = 3, Code = "PL-ROCCA", Name = "Firmakauplus Rocca al Mare" },
-                new Location { LocationTypeId = 3, Code = "PL-KRISTE", Name = "Firmakauplus Kristiine" }
+                new Location { LocationTypeId = 3, Code = "PL-KRISTI", Name = "Firmakauplus Kristiine" }
             };
             context.AddRange(locations);
             context.SaveChanges();
