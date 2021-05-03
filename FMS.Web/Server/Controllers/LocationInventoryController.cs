@@ -2,6 +2,7 @@
 using FMS.Web.Server.Extensions;
 using FMS.Web.Shared;
 using FMS.Web.Shared.Dtos;
+using FMS.Web.Shared.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -20,9 +21,9 @@ namespace FMS.Web.Server.Controllers
             _context = context;
         }
 
-        // GET: api/locationinventory/locationid
-        [HttpGet("{locationId}")]
-        public async Task<ActionResult<PagedResult<ProductInventoryInLocationDto>>> GetLocationInventory(int locationId, int page, int pageSize)
+        // POST: api/locationinventory/locationid
+        [HttpPost("{locationId}")]
+        public async Task<ActionResult<PagedResult<ProductInventoryInLocationDto>>> GetLocationInventory(int locationId, LocationInventoryListOptions options)
         {
             return await _context.Inventory
                 .AsNoTracking()
@@ -38,7 +39,7 @@ namespace FMS.Web.Server.Controllers
                     ReservedQuantity = i.ReservedQuantity
                 })
                 .OrderBy(l => l.ProductCode)
-                .GetPagedAsync(page, pageSize);
+                .GetPagedAsync(options.CurrentPage, options.PageSize);
         }
 
         // GET: api/locationinventory/locationid/product/productid

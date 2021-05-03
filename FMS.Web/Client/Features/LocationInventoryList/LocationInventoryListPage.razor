@@ -9,7 +9,7 @@
 
     <h5 class="bg-light p-2 mb-5 text-secondary">Filter</h5>
 
-    @if (_inventory == null)
+    @if (_pagedInventory == null)
     {
         <p>Loading...</p>
     }
@@ -18,22 +18,22 @@
         <ProductDetails Item="@SelectedItem" />
 
         <div class="grid mb-5">
-            @foreach (var item in _inventory.Results)
+            @foreach (var item in _pagedInventory.Results)
             {
                 <ProductCard Item="@item" OnSelected="HandleProductSelected" />
             }
         </div>
 
         <div class="d-flex justify-content-center">
-            <Pager Result="@_inventory" OnPageChanged="HandlePageChanged" />
+            <Pager Result="@_pagedInventory" OnPageChanged="@((p) => HandleOptionsChanged(p))" />
         </div>
     }
 </div>
 
 
 @code {
-    private PagedResult<ProductInventoryInLocationDto> _inventory;
-    private int _pageSize = 18;
+    private PagedResult<ProductInventoryInLocationDto> _pagedInventory;
+    private LocationInventoryListOptions _options = new LocationInventoryListOptions { CurrentPage = 1, PageSize = 18 };
     private ProductInventoryInLocationDto _selectedItem;
 
     private ProductInventoryInLocationDto SelectedItem
@@ -56,20 +56,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadInventory(1);
+        await UpdateList();
     }
 
     #region helpers
-    private async Task LoadInventory(int page)
+    private async Task UpdateList()
     {
-        _inventory = await Http.GetFromJsonAsync<PagedResult<ProductInventoryInLocationDto>>($"api/locationinventory/{Id}?page={page}&pagesize={_pageSize}");
+        var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}", _options);
+        if (response.IsSuccessStatusCode)
+        {
+            _pagedInventory = await response.Content.ReadFromJsonAsync<PagedResult<ProductInventoryInLocationDto>>();
+        }
     }
     #endregion
 
     #region event handlers
-    private async Task HandlePageChanged(int page)
+    private async Task HandleOptionsChanged(int pageNo = 1)
     {
-        await LoadInventory(page);
+        _options.CurrentPage = pageNo;
+        await UpdateList();
     }
 
     private void HandleProductSelected(ProductInventoryInLocationDto item)
