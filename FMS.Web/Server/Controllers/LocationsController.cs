@@ -43,7 +43,9 @@ namespace FMS.Web.Server.Controllers
                     LocationTypeId = l.LocationTypeId,
                     LocationCode = l.Code,
                     LocationName = l.Name,
-                    TotalCount = l.Inventory.Count()
+                    TotalCount = l.Inventory.Count(),
+                    TotalStockQuantity = l.Inventory.Sum(i => i.StockQuantity),
+                    TotalReservedQuantity = l.Inventory.Sum(i => i.ReservedQuantity)
                 })
                 .GetPagedAsync(options.CurrentPage, options.PageSize);
         }
