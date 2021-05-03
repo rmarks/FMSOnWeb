@@ -1,17 +1,17 @@
 ﻿@page "/locations"
+@page "/locations/return"
 @inject HttpClient Http
 @inject NavigationManager NavManager
-@inject ReturnUrlManager ReturnUrlManager
-@implements IDisposable
+@inject AppStateManager AppState 
 
 <div class="container">
     <nav class="navbar navbar-dark bg-secondary rounded mb-3">
-        <span class="navbar-brand">Asukohad</span>
+        <span class="navbar-brand">Laod</span>
     </nav>
 
-    <LocationFilter @ref="_locationFilter" />
+    <LocationFilter Options="@_options" OnOptionsChanged="@(() => HandleOptionsChanged())" />
 
-    @if (_locations == null)
+    @if (_pagedLocations == null)
     {
         <p>Loading...</p>
     }
@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var location in _locations)
+                @foreach (var location in _pagedLocations.Results)
                 {
                     <tr>
                         <td style="width: 15%;">@location.LocationCode</td>
@@ -52,43 +52,34 @@
                 }
             </tbody>
         </table>
+
+        <div class="d-flex justify-content-center">
+            <Pager Result="@_pagedLocations" OnPageChanged="@((p) => HandleOptionsChanged(p))" />
+        </div>
     }
 </div>
 
 @code {
-    private IEnumerable<LocationListItemDto> _locations;
-    private IEnumerable<LocationListItemDto> _cachedLocations;
-    private LocationFilter _locationFilter;
+    private PagedResult<LocationListItemDto> _pagedLocations;
+    private LocationListOptions _options = new LocationListOptions { CurrentPage = 1, PageSize = 10 };
 
     protected override async Task OnInitializedAsync()
     {
-        _locations = await Http.GetFromJsonAsync<IEnumerable<LocationListItemDto>>("api/locations");
-        _cachedLocations = _locations;
+        if (NavManager.Uri.ToLower().Contains("return"))
+        {
+            _options = AppState.LocationListOptions ?? _options;
+        }
 
-        NavManager.LocationChanged += HandleLocationChanged;
-
-        UpdateFilters();
+        await UpdateList();
     }
 
     #region helpers
-    private void UpdateFilters()
+    private async Task UpdateList()
     {
-        var filters = new List<Func<LocationListItemDto, bool>>();
-
-        NavManager.TryGetQueryString<int>("locationtypeid", out var locationTypeId);
-
-        if (locationTypeId > 0)
+        var response = await Http.PostAsJsonAsync<LocationListOptions>("api/locations", _options);
+        if (response.IsSuccessStatusCode)
         {
-            filters.Add(l => l.LocationTypeId == locationTypeId);
-        }
-
-        if (filters.Any())
-        {
-            _locations = _cachedLocations.Where(l => filters.All(filter => filter(l)));
-        }
-        else
-        {
-            _locations = _cachedLocations;
+            _pagedLocations = await response.Content.ReadFromJsonAsync <PagedResult<LocationListItemDto>>();
         }
     }
 
@@ -96,28 +87,16 @@
     #endregion
 
     #region event handlers
-    private void HandleLocationChanged(object sender, LocationChangedEventArgs args)
+    private async Task HandleOptionsChanged(int pageNo = 1)
     {
-        UpdateFilters();
-
-        //for cases where the page was already open, but still the menu item of the same page was clicked
-        //then synchronization (initialization) of the filter with the url of the menu item is needed
-        if (args.IsNavigationIntercepted)
-        {
-            _locationFilter.Refresh();
-        }
-
-        StateHasChanged();
+        _options.CurrentPage = pageNo;
+        await UpdateList();
     }
 
     private void HandleInventorySelected(int locationId)
     {
-        ReturnUrlManager.ReturnUrl = NavManager.ToBaseRelativePath(NavManager.Uri);
+        AppState.LocationListOptions = _options;
         NavManager.NavigateTo($"locations/{locationId}/inventory");
     }
-    #endregion
-
-    #region IDisposable
-    public void Dispose() => NavManager.LocationChanged -= HandleLocationChanged;
     #endregion
 }

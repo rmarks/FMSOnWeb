@@ -1,11 +1,10 @@
 ﻿@inject HttpClient Http
-@inject NavigationManager NavManager
 
 <div class="d-flex justify-content-end align-items-baseline bg-light p-2 mb-3">
-    <label class="mr-3 text-secondary">Asukoha liik</label>
+    <label class="mr-3 text-secondary">Lao liik</label>
     <select class="form-control" style="width: 13rem;"
-            value="@_locationTypeId"
-            @onchange="HandleLocationTypeChange">
+            value="@Options.LocationTypeId"
+            @onchange="HandleLocationTypeChanged">
         <option value="0">-- Kõik --</option>
         @if (_locationTypes != null)
         {
@@ -18,51 +17,22 @@
 </div>
 
 @code {
-    private int _locationTypeId;
     private IEnumerable<LocationTypeDropdownItemDto> _locationTypes;
+
+    [Parameter] public LocationListOptions Options { get; set; }
+    [Parameter] public EventCallback OnOptionsChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         _locationTypes = await Http.GetFromJsonAsync<IEnumerable<LocationTypeDropdownItemDto>>("api/locations/dropdowns");
-
-        InitializeFilter();
     }
 
-    private void HandleLocationTypeChange(ChangeEventArgs args)
+    private void HandleLocationTypeChanged(ChangeEventArgs args)
     {
         if (int.TryParse(args.Value.ToString(), out var value))
         {
-            _locationTypeId = value;
-            FilterLocations();
+            Options.LocationTypeId = value;
+            OnOptionsChanged.InvokeAsync();
         }
-    }
-
-    private void FilterLocations()
-    {
-        var queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-
-        if (_locationTypeId > 0)
-        {
-            queryString.Add("locationtypeid", _locationTypeId.ToString());
-        }
-
-        if (string.IsNullOrWhiteSpace(queryString.ToString()))
-        {
-            NavManager.NavigateTo("/locations");
-        }
-
-        NavManager.NavigateTo($"/locations?{queryString.ToString()}");
-    }
-
-    private void InitializeFilter()
-    {
-        NavManager.TryGetQueryString<int>("locationtypeid", out var value);
-        _locationTypeId = value;
-    }
-
-    public void Refresh()
-    {
-        InitializeFilter();
-        StateHasChanged();
     }
 }

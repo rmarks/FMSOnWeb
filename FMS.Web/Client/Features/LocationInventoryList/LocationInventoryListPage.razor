@@ -1,11 +1,10 @@
 ﻿@page "/locations/{Id:int}/inventory"
 @inject HttpClient Http
-@inject ReturnUrlManager ReturnUrlManager
 
 <div>
     <nav class="navbar navbar-dark bg-secondary rounded mb-3">
-        <span class="navbar-brand">Asukoht</span>
-        <NavLink class="btn btn-primary ml-auto" href="@_returnUrl">Tagasi</NavLink>
+        <span class="navbar-brand">Ladu</span>
+        <NavLink class="btn btn-primary ml-auto" href="locations/return">Tagasi</NavLink>
     </nav>
 
     <h5 class="bg-light p-2 mb-5 text-secondary">Filter</h5>
@@ -36,7 +35,6 @@
     private PagedResult<ProductInventoryInLocationDto> _inventory;
     private int _pageSize = 18;
     private ProductInventoryInLocationDto _selectedItem;
-    private string _returnUrl;
 
     private ProductInventoryInLocationDto SelectedItem
     {
@@ -58,7 +56,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _returnUrl = ReturnUrlManager.ReturnUrl;
         await LoadInventory(1);
     }
 

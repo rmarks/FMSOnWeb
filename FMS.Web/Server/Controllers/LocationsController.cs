@@ -1,5 +1,8 @@
 ﻿using FMS.DAL;
+using FMS.Web.Server.Extensions;
+using FMS.Web.Shared;
 using FMS.Web.Shared.Dtos;
+using FMS.Web.Shared.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -20,11 +23,20 @@ namespace FMS.Web.Server.Controllers
         }
 
         // GET: api/locations
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LocationListItemDto>>> GetLocations()
+        //[HttpGet]
+        // POST: api/locations
+        [HttpPost]
+        public async Task<ActionResult<PagedResult<LocationListItemDto>>> GetLocations(LocationListOptions options)
         {
-            return await _context.Locations
-                .AsNoTracking()
+            var query = _context.Locations
+                .AsNoTracking();
+
+            if (options.LocationTypeId > 0)
+            {
+                query = query.Where(l => l.LocationTypeId == options.LocationTypeId);
+            }
+
+            return await query
                 .Select(l => new LocationListItemDto
                 {
                     LocationId = l.Id,
@@ -33,7 +45,7 @@ namespace FMS.Web.Server.Controllers
                     LocationName = l.Name,
                     TotalCount = l.Inventory.Count()
                 })
-                .ToListAsync();
+                .GetPagedAsync(options.CurrentPage, options.PageSize);
         }
 
         // GET: api/locations/dropdowns

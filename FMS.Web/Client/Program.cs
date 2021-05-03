@@ -1,4 +1,4 @@
-using FMS.Web.Client.Shared;
+using FMS.Web.Client.Features.Shared;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +19,7 @@ namespace FMS.Web.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddSingleton<ReturnUrlManager>();
+            builder.Services.AddSingleton<AppStateManager>();
 
             await builder.Build().RunAsync();
         }
