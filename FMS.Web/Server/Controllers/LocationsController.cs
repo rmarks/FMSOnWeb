@@ -52,11 +52,11 @@ namespace FMS.Web.Server.Controllers
 
         // GET: api/locations/dropdowns
         [HttpGet("dropdowns")]
-        public async Task<ActionResult<IEnumerable<LocationTypeDropdownItemDto>>> GetDropdowns()
+        public async Task<ActionResult<IEnumerable<DropdownDto>>> GetDropdowns()
         {
             return await _context.LocationTypes
                 .AsNoTracking()
-                .Select(l => new LocationTypeDropdownItemDto
+                .Select(l => new DropdownDto
                 {
                     Id = l.Id,
                     Name = l.Name

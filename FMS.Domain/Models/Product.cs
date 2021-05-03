@@ -13,6 +13,12 @@ namespace FMS.Domain.Models
         [Required, MaxLength(50)]
         public string Name { get; set; }
 
+        public int? ProductSourceTypeId { get; set; }
+        public ProductSourceType ProductSourceType { get; set; }
+
+        public int? ProductGroupId { get; set; }
+        public ProductGroup ProductGroup { get; set; }
+
         public IList<Inventory> Inventory { get; set; }
     }
 }

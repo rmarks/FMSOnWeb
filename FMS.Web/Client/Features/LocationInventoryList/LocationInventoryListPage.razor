@@ -7,7 +7,7 @@
         <NavLink class="btn btn-primary ml-auto" href="locations/return">Tagasi</NavLink>
     </nav>
 
-    <h5 class="bg-light p-2 mb-5 text-secondary">Filter</h5>
+    <LocationInventoryFilter Options="@_options" OnOptionsChanged="@(() => HandleOptionsChanged())" />
 
     @if (_pagedInventory == null)
     {

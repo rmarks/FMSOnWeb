@@ -11,7 +11,11 @@ namespace FMS.DAL
 
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationType> LocationTypes { get; set; }
+        
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductSourceType> ProductSourceTypes { get; set; }
+        public DbSet<ProductGroup> ProductGroups { get; set; }
+
         public DbSet<Inventory> Inventory { get; set; }
         public DbSet<PriceList> PriceLists { get; set; }
         public DbSet<Price> Prices { get; set; }

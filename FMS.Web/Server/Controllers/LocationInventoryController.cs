@@ -1,6 +1,7 @@
 ﻿using FMS.DAL;
 using FMS.Web.Server.Extensions;
 using FMS.Web.Shared;
+using FMS.Web.Shared.Dropdowns;
 using FMS.Web.Shared.Dtos;
 using FMS.Web.Shared.Options;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,21 @@ namespace FMS.Web.Server.Controllers
         [HttpPost("{locationId}")]
         public async Task<ActionResult<PagedResult<ProductInventoryInLocationDto>>> GetLocationInventory(int locationId, LocationInventoryListOptions options)
         {
-            return await _context.Inventory
+            var query = _context.Inventory
                 .AsNoTracking()
-                .Where(i => i.LocationId == locationId)
+                .Where(i => i.LocationId == locationId);
+
+            if (options.ProductSourceTypeId > 0)
+            {
+                query = query.Where(i => i.Product.ProductSourceTypeId == options.ProductSourceTypeId);
+            };
+
+            if (options.ProductGroupId > 0)
+            {
+                query = query.Where(i => i.Product.ProductGroupId == options.ProductGroupId);
+            };
+
+            return await query
                 .Select(i => new ProductInventoryInLocationDto
                 {
                     InventoryId = i.Id,
@@ -76,6 +89,35 @@ namespace FMS.Web.Server.Controllers
                         CurrencyCode = p.PriceList.CurrencyCode
                     })
                     .ToListAsync()
+            };
+        }
+
+        // GET: api/locationinventory/dropdowns
+        [HttpGet("dropdowns")]
+        public async Task<LocationInventoryDropdowns> GetDropdowns()
+        {
+            var productSourceTypes = await _context.ProductSourceTypes
+                    .AsNoTracking()
+                    .Select(p => new DropdownDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    })
+                    .ToListAsync();
+
+            var productGroups = await _context.ProductGroups
+                    .AsNoTracking()
+                    .Select(p => new DropdownDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    })
+                    .ToListAsync();
+
+            return new LocationInventoryDropdowns
+            {
+                ProductSourceTypes = productSourceTypes,
+                ProductGroups = productGroups
             };
         }
     }

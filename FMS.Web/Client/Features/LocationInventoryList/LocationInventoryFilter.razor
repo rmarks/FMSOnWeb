@@ -1,0 +1,54 @@
+﻿@inject HttpClient Http
+
+@if (_dropdowns != null)
+{
+    <div class="d-flex justify-content-end align-items-baseline bg-light p-2 mb-5">
+        <label class="mr-3 text-secondary">Toote lähtetüüp</label>
+        <select class="form-control mr-5" style="width: 13rem;"
+                @bind="@Options.ProductSourceTypeId">
+            <option value="0">-- Kõik --</option>
+            @foreach (var item in _dropdowns.ProductSourceTypes)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+
+        <label class="mr-3 text-secondary">Toote grupp</label>
+        <select class="form-control mr-5" style="width: 13rem;"
+                @bind="@Options.ProductGroupId">
+            <option value="0">-- Kõik --</option>
+            @foreach (var item in _dropdowns.ProductGroups)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+
+        <button type="button" class="btn btn-outline-primary" @onclick="HandleClick">Näita</button>
+    </div>
+}
+
+@code {
+    private LocationInventoryDropdowns _dropdowns;
+
+    [Parameter] public LocationInventoryListOptions Options { get; set; }
+    [Parameter] public EventCallback OnOptionsChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _dropdowns = await Http.GetFromJsonAsync<LocationInventoryDropdowns>("api/locationinventory/dropdowns");
+    }
+
+    //private void HandleProductSourceTypeChanged(ChangeEventArgs args)
+    //{
+    //    if (int.TryParse(args.Value.ToString(), out var value))
+    //    {
+    //        Options.ProductSourceTypeId = value;
+    //        OnOptionsChanged.InvokeAsync();
+    //    }
+    //}
+
+    private void HandleClick()
+    {
+        OnOptionsChanged.InvokeAsync();
+    }
+}

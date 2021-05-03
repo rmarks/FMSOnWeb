@@ -39,42 +39,52 @@ namespace FMS.DAL
             context.AddRange(locations);
             context.SaveChanges();
 
+            // product source types
+            var sourceType1 = new ProductSourceType { Name = "Toodang" };
+            var sourceType2 = new ProductSourceType { Name = "Ost" };
+
+            // product groups
+            var group1 = new ProductGroup { Name = "Sõrmus" };
+            var group2 = new ProductGroup { Name = "Kõrvarõngad" };
+            var group3 = new ProductGroup { Name = "Ripats" };
+
             // 27 products
             var products = new Product[]
             {
-                new Product { Code = "00020073", Name = "Sõrmus nat. safiir"},
-                new Product { Code = "00020282", Name = "Sõrmus naturaalne safiir, teemant"},
-                new Product { Code = "00020355", Name = "Sõrmus naturaalne granaat"},
-                new Product { Code = "00020446", Name = "Sõrmus pärl valge"},
-                new Product { Code = "00020616", Name = "Sõrmus nat. granaat"},
-                new Product { Code = "00020829", Name = "Sõrmus naturaalne granaat"},
-                new Product { Code = "00021477", Name = "Sõrmus valge pärl"},
-                new Product { Code = "00021526", Name = "Sõrmus naturaalne smaragd"},
-                new Product { Code = "00021679", Name = "Sõrmus nat. topaas"},
-                new Product { Code = "00022261", Name = "Sõrmus nat. granaat"},
-                new Product { Code = "03020916", Name = "Sõrmus sünt. aleksandriit"},
-                new Product { Code = "03021035", Name = "Sõrmus CZ must"},
-                new Product { Code = "03021717", Name = "Sõrmus sünt. ametüst"},
-                new Product { Code = "03022187", Name = "Sõrmus CZ"},
-                new Product { Code = "03022335", Name = "Sõrmus sünt. aleksandriit"},
-                new Product { Code = "03030232", Name = "Kõrvarõngad CZ valge"},
-                new Product { Code = "03030796", Name = "Kõrvarõngad CZ valge"},
-                new Product { Code = "03031077", Name = "Kõrvarõngad CZ shampanja"},
-                new Product { Code = "03031752", Name = "Kõrvarõngad CZ sampanja"},
-                new Product { Code = "03031528", Name = "Kõrvarõngad CZ"},
-                new Product { Code = "03090239", Name = "Ripats CZ sinine"},
-                new Product { Code = "03090662", Name = "Ripats sünt. aleksandriit"},
-                new Product { Code = "03090797", Name = "Ripats CZ valge"},
-                new Product { Code = "03090820", Name = "Ripats CZ valge"},
-                new Product { Code = "03092347", Name = "Ripats CZ lavender"},
-                new Product { Code = "03092477", Name = "Ripats CZ"},
-                new Product { Code = "03098704", Name = "Ripats Hobuseraud CZ"}
+                new Product { Code = "00020073", Name = "Sõrmus nat. safiir", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "00020282", Name = "Sõrmus naturaalne safiir, teemant", ProductSourceType = sourceType2, ProductGroup = group1 },
+                new Product { Code = "00020355", Name = "Sõrmus naturaalne granaat", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "00020446", Name = "Sõrmus pärl valge", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "00020616", Name = "Sõrmus nat. granaat", ProductSourceType = sourceType2, ProductGroup = group1 },
+                new Product { Code = "00020829", Name = "Sõrmus naturaalne granaat", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "00021477", Name = "Sõrmus valge pärl", ProductSourceType = sourceType2, ProductGroup = group1 },
+                new Product { Code = "00021526", Name = "Sõrmus naturaalne smaragd", ProductSourceType = sourceType2, ProductGroup = group1 },
+                new Product { Code = "00021679", Name = "Sõrmus nat. topaas", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "00022261", Name = "Sõrmus nat. granaat", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "03020916", Name = "Sõrmus sünt. aleksandriit", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "03021035", Name = "Sõrmus CZ must", ProductSourceType = sourceType2, ProductGroup = group1 },
+                new Product { Code = "03021717", Name = "Sõrmus sünt. ametüst", ProductSourceType = sourceType2, ProductGroup = group1 },
+                new Product { Code = "03022187", Name = "Sõrmus CZ", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "03022335", Name = "Sõrmus sünt. aleksandriit", ProductSourceType = sourceType1, ProductGroup = group1 },
+                new Product { Code = "03030232", Name = "Kõrvarõngad CZ valge", ProductSourceType = sourceType2, ProductGroup = group2 },
+                new Product { Code = "03030796", Name = "Kõrvarõngad CZ valge", ProductSourceType = sourceType2, ProductGroup = group2 },
+                new Product { Code = "03031077", Name = "Kõrvarõngad CZ shampanja", ProductSourceType = sourceType1, ProductGroup = group2 },
+                new Product { Code = "03031752", Name = "Kõrvarõngad CZ sampanja", ProductSourceType = sourceType1, ProductGroup = group2 },
+                new Product { Code = "03031528", Name = "Kõrvarõngad CZ", ProductSourceType = sourceType2, ProductGroup = group2 },
+                new Product { Code = "03090239", Name = "Ripats CZ sinine", ProductSourceType = sourceType2, ProductGroup = group3 },
+                new Product { Code = "03090662", Name = "Ripats sünt. aleksandriit", ProductSourceType = sourceType1, ProductGroup = group3 },
+                new Product { Code = "03090797", Name = "Ripats CZ valge", ProductSourceType = sourceType1, ProductGroup = group3 },
+                new Product { Code = "03090820", Name = "Ripats CZ valge", ProductSourceType = sourceType1, ProductGroup = group3 },
+                new Product { Code = "03092347", Name = "Ripats CZ lavender", ProductSourceType = sourceType2, ProductGroup = group3 },
+                new Product { Code = "03092477", Name = "Ripats CZ", ProductSourceType = sourceType1, ProductGroup = group3 },
+                new Product { Code = "03098704", Name = "Ripats Hobuseraud CZ", ProductSourceType = sourceType1, ProductGroup = group3 }
             };
             context.AddRange(products);
             context.SaveChanges();
 
             var random = new Random();
 
+            // inventory
             var inventory = new List<Inventory>();
             foreach (var location in locations)
             {
@@ -123,6 +133,7 @@ namespace FMS.DAL
             context.AddRange(priceLists);
             context.SaveChanges();
 
+            // prices
             var prices = new List<Price>();
             foreach (var priceList in priceLists)
             {

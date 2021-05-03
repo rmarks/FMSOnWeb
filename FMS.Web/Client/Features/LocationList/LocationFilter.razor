@@ -17,14 +17,14 @@
 </div>
 
 @code {
-    private IEnumerable<LocationTypeDropdownItemDto> _locationTypes;
+    private IEnumerable<DropdownDto> _locationTypes;
 
     [Parameter] public LocationListOptions Options { get; set; }
     [Parameter] public EventCallback OnOptionsChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _locationTypes = await Http.GetFromJsonAsync<IEnumerable<LocationTypeDropdownItemDto>>("api/locations/dropdowns");
+        _locationTypes = await Http.GetFromJsonAsync<IEnumerable<DropdownDto>>("api/locations/dropdowns");
     }
 
     private void HandleLocationTypeChanged(ChangeEventArgs args)
