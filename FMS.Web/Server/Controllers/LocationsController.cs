@@ -26,7 +26,7 @@ namespace FMS.Web.Server.Controllers
         //[HttpGet]
         // POST: api/locations
         [HttpPost]
-        public async Task<ActionResult<PagedResult<LocationListItemDto>>> GetLocations(LocationListOptions options)
+        public async Task<ActionResult<PagedResult<LocationListDto>>> GetLocations(LocationListOptions options)
         {
             var query = _context.Locations
                 .AsNoTracking();
@@ -37,7 +37,7 @@ namespace FMS.Web.Server.Controllers
             }
 
             return await query
-                .Select(l => new LocationListItemDto
+                .Select(l => new LocationListDto
                 {
                     LocationId = l.Id,
                     LocationTypeId = l.LocationTypeId,

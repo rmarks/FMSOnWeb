@@ -15,10 +15,10 @@
 
 @code {
     [Parameter]
-    public ProductInventoryInLocationDto Item { get; set; }
+    public LocationInventoryListDto Item { get; set; }
 
     [Parameter]
-    public EventCallback<ProductInventoryInLocationDto> OnSelected { get; set; }
+    public EventCallback<LocationInventoryListDto> OnSelected { get; set; }
 
     private string ImagePath => $"img/products/{Item.ProductCode}.jpg";
     private string ButtonColor => Item.FreeQuantity > 0 ? "mediumseagreen" : (Item.ReservedQuantity > 0 ? "orange" : "firebrick");

@@ -39,45 +39,154 @@ namespace FMS.DAL
             context.AddRange(locations);
             context.SaveChanges();
 
+            // product statuses
+            var status1 = new ProductStatus { Name = "Aktiivne" };
+            var status2 = new ProductStatus { Name = "Lõpetatud" };
+
+            // product materials
+            var material1 = new ProductMaterial { Name = "Kuld" };
+            var material2 = new ProductMaterial { Name = "Hõbe" };
+
             // product source types
             var sourceType1 = new ProductSourceType { Name = "Toodang" };
             var sourceType2 = new ProductSourceType { Name = "Ost" };
 
+            // product destination types
+            var destType1 = new ProductDestinationType { Name = "Sortiment" };
+            var destType2 = new ProductDestinationType { Name = "Allhange" };
+            var destType3 = new ProductDestinationType { Name = "Eritellimus" };
+
+            // product types
+            var productTypes = new ProductType[]
+            {
+                new ProductType { Name = "Ehted" },
+                new ProductType { Name = "Lauariistad" },
+                new ProductType { Name = "Lauanõud" }
+            };
+            context.AddRange(productTypes);
+            context.SaveChanges();
+
             // product groups
-            var group1 = new ProductGroup { Name = "Sõrmus" };
-            var group2 = new ProductGroup { Name = "Kõrvarõngad" };
-            var group3 = new ProductGroup { Name = "Ripats" };
+            var group1 = new ProductGroup { Name = "Sõrmus", ProductTypeId = 1 };
+            var group2 = new ProductGroup { Name = "Kõrvarõngad", ProductTypeId = 1 };
+            var group3 = new ProductGroup { Name = "Ripats", ProductTypeId = 1 };
+            var productGroups = new ProductGroup[]
+            {
+                group1,
+                group2,
+                group3,
+                new ProductGroup { Name = "Lauanuga", ProductTypeId = 2 },
+                new ProductGroup { Name = "Lauakahvel", ProductTypeId = 2},
+                new ProductGroup { Name = "Küünlajalg", ProductTypeId = 3},
+                new ProductGroup { Name = "Konjakipokaal", ProductTypeId = 3}
+            };
+            context.AddRange(productGroups);
+            context.SaveChanges();
+
+            // product brands
+            var productBrands = new ProductBrand[]
+            {
+                new ProductBrand { Name = "Lummus" },
+                new ProductBrand { Name = "Juveel teemant "},
+                new ProductBrand { Name = "Kohinoor"}
+            };
+            context.AddRange(productBrands);
+            context.SaveChanges();
+
+            // product collections
+            var productCollections = new ProductCollection[]
+            {
+                new ProductCollection { Name = "Aastasada", ProductBrandId = 1},
+                new ProductCollection { Name = "Aovalgus", ProductBrandId = 1},
+                new ProductCollection { Name = "Võsailu", ProductBrandId = 1}
+            };
+            context.AddRange(productCollections);
+            context.SaveChanges();
 
             // 27 products
             var products = new Product[]
             {
-                new Product { Code = "00020073", Name = "Sõrmus nat. safiir", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "00020282", Name = "Sõrmus naturaalne safiir, teemant", ProductSourceType = sourceType2, ProductGroup = group1 },
-                new Product { Code = "00020355", Name = "Sõrmus naturaalne granaat", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "00020446", Name = "Sõrmus pärl valge", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "00020616", Name = "Sõrmus nat. granaat", ProductSourceType = sourceType2, ProductGroup = group1 },
-                new Product { Code = "00020829", Name = "Sõrmus naturaalne granaat", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "00021477", Name = "Sõrmus valge pärl", ProductSourceType = sourceType2, ProductGroup = group1 },
-                new Product { Code = "00021526", Name = "Sõrmus naturaalne smaragd", ProductSourceType = sourceType2, ProductGroup = group1 },
-                new Product { Code = "00021679", Name = "Sõrmus nat. topaas", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "00022261", Name = "Sõrmus nat. granaat", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "03020916", Name = "Sõrmus sünt. aleksandriit", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "03021035", Name = "Sõrmus CZ must", ProductSourceType = sourceType2, ProductGroup = group1 },
-                new Product { Code = "03021717", Name = "Sõrmus sünt. ametüst", ProductSourceType = sourceType2, ProductGroup = group1 },
-                new Product { Code = "03022187", Name = "Sõrmus CZ", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "03022335", Name = "Sõrmus sünt. aleksandriit", ProductSourceType = sourceType1, ProductGroup = group1 },
-                new Product { Code = "03030232", Name = "Kõrvarõngad CZ valge", ProductSourceType = sourceType2, ProductGroup = group2 },
-                new Product { Code = "03030796", Name = "Kõrvarõngad CZ valge", ProductSourceType = sourceType2, ProductGroup = group2 },
-                new Product { Code = "03031077", Name = "Kõrvarõngad CZ shampanja", ProductSourceType = sourceType1, ProductGroup = group2 },
-                new Product { Code = "03031752", Name = "Kõrvarõngad CZ sampanja", ProductSourceType = sourceType1, ProductGroup = group2 },
-                new Product { Code = "03031528", Name = "Kõrvarõngad CZ", ProductSourceType = sourceType2, ProductGroup = group2 },
-                new Product { Code = "03090239", Name = "Ripats CZ sinine", ProductSourceType = sourceType2, ProductGroup = group3 },
-                new Product { Code = "03090662", Name = "Ripats sünt. aleksandriit", ProductSourceType = sourceType1, ProductGroup = group3 },
-                new Product { Code = "03090797", Name = "Ripats CZ valge", ProductSourceType = sourceType1, ProductGroup = group3 },
-                new Product { Code = "03090820", Name = "Ripats CZ valge", ProductSourceType = sourceType1, ProductGroup = group3 },
-                new Product { Code = "03092347", Name = "Ripats CZ lavender", ProductSourceType = sourceType2, ProductGroup = group3 },
-                new Product { Code = "03092477", Name = "Ripats CZ", ProductSourceType = sourceType1, ProductGroup = group3 },
-                new Product { Code = "03098704", Name = "Ripats Hobuseraud CZ", ProductSourceType = sourceType1, ProductGroup = group3 }
+                new Product { Code = "00020073", Name = "Sõrmus nat. safiir", ProductStatus = status1, ProductMaterial = material1, 
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "00020282", Name = "Sõrmus naturaalne safiir, teemant", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType2, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 2 },
+                new Product { Code = "00020355", Name = "Sõrmus naturaalne granaat", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "00020446", Name = "Sõrmus pärl valge", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 3 },
+                new Product { Code = "00020616", Name = "Sõrmus nat. granaat", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "00020829", Name = "Sõrmus naturaalne granaat", ProductStatus = status2, ProductMaterial = material2,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "00021477", Name = "Sõrmus valge pärl", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 3 },
+                new Product { Code = "00021526", Name = "Sõrmus naturaalne smaragd", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "00021679", Name = "Sõrmus nat. topaas", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "00022261", Name = "Sõrmus nat. granaat", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType3, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 2 },
+                new Product { Code = "03020916", Name = "Sõrmus sünt. aleksandriit", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 1 },
+                new Product { Code = "03021035", Name = "Sõrmus CZ must", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 3 },
+                new Product { Code = "03021717", Name = "Sõrmus sünt. ametüst", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType2, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 1 },
+                new Product { Code = "03022187", Name = "Sõrmus CZ", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 3 },
+                new Product { Code = "03022335", Name = "Sõrmus sünt. aleksandriit", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group1.ProductTypeId, ProductGroup = group1,
+                    ProductBrandId = 1, ProductCollectionId = 1 },
+                new Product { Code = "03030232", Name = "Kõrvarõngad CZ valge", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType3, ProductTypeId = group2.ProductTypeId, ProductGroup = group2,
+                    ProductBrandId = 3 },
+                new Product { Code = "03030796", Name = "Kõrvarõngad CZ valge", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType1, ProductTypeId = group2.ProductTypeId, ProductGroup = group2,
+                    ProductBrandId = 3 },
+                new Product { Code = "03031077", Name = "Kõrvarõngad CZ shampanja", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group2.ProductTypeId, ProductGroup = group2,
+                    ProductBrandId = 3 },
+                new Product { Code = "03031752", Name = "Kõrvarõngad CZ sampanja", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group2.ProductTypeId, ProductGroup = group2,
+                    ProductBrandId = 3 },
+                new Product { Code = "03031528", Name = "Kõrvarõngad CZ", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType1, ProductTypeId = group2.ProductTypeId, ProductGroup = group2,
+                    ProductBrandId = 3 },
+                new Product { Code = "03090239", Name = "Ripats CZ sinine", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType2, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 3 },
+                new Product { Code = "03090662", Name = "Ripats sünt. aleksandriit", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 1, ProductCollectionId = 1 },
+                new Product { Code = "03090797", Name = "Ripats CZ valge", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 3 },
+                new Product { Code = "03090820", Name = "Ripats CZ valge", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 3 },
+                new Product { Code = "03092347", Name = "Ripats CZ lavender", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType2, ProductDestinationType = destType2, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 3 },
+                new Product { Code = "03092477", Name = "Ripats CZ", ProductStatus = status2, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 3 },
+                new Product { Code = "03098704", Name = "Ripats Hobuseraud CZ", ProductStatus = status1, ProductMaterial = material1,
+                    ProductSourceType = sourceType1, ProductDestinationType = destType1, ProductTypeId = group3.ProductTypeId, ProductGroup = group3,
+                    ProductBrandId = 3 }
             };
             context.AddRange(products);
             context.SaveChanges();

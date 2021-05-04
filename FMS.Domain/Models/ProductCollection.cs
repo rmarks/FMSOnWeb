@@ -2,14 +2,14 @@
 
 namespace FMS.Domain.Models
 {
-    public class ProductGroup
+    public class ProductCollection
     {
         public int Id { get; set; }
-
+        
         [Required, MaxLength(30)]
         public string Name { get; set; }
 
-        public int ProductTypeId { get; set; }
-        public ProductType ProductType { get; set; }
+        public int ProductBrandId { get; set; }
+        public ProductBrand ProductBrand { get; set; }
     }
 }

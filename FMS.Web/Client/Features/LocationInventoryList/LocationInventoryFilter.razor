@@ -1,29 +1,133 @@
 ﻿@inject HttpClient Http
+@using System.Reflection
 
 @if (_dropdowns != null)
 {
-    <div class="d-flex justify-content-end align-items-baseline bg-light p-2 mb-5">
-        <label class="mr-3 text-secondary">Toote lähtetüüp</label>
-        <select class="form-control mr-5" style="width: 13rem;"
-                @bind="@Options.ProductSourceTypeId">
-            <option value="0">-- Kõik --</option>
-            @foreach (var item in _dropdowns.ProductSourceTypes)
-            {
-                <option value="@item.Id">@item.Name</option>
-            }
-        </select>
+    <div class="row bg-light mx-0 py-2 mb-4">
+        <div class="col">
+            <div class="row mb-2">
+                <label class="col-5 col-form-label text-right text-secondary">Toote olek</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductStatusId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.ProductStatuses)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-5 col-form-label text-right text-secondary">Toote materjal</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductMaterialId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.ProductMaterials)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
 
-        <label class="mr-3 text-secondary">Toote grupp</label>
-        <select class="form-control mr-5" style="width: 13rem;"
-                @bind="@Options.ProductGroupId">
-            <option value="0">-- Kõik --</option>
-            @foreach (var item in _dropdowns.ProductGroups)
-            {
-                <option value="@item.Id">@item.Name</option>
-            }
-        </select>
+        <div class="col">
+            <div class="row mb-2">
+                <label class="col-5 col-form-label text-right text-secondary">Toote lähtetüüp</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductSourceTypeId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.ProductSourceTypes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-5 col-form-label text-right text-secondary">Toote sihttüüp</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductDestinationTypeId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.ProductDestinationTypes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
 
-        <button type="button" class="btn btn-outline-primary" @onclick="HandleClick">Näita</button>
+        <div class="col">
+            <div class="row mb-2">
+                <label class="col-5 col-form-label text-right text-secondary">Toote tüüp</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductTypeId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.ProductTypes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-5 col-form-label text-right text-secondary">Toote grupp</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductGroupId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.GetFilteredProductGroups(Options.ProductTypeId))
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="row mb-2">
+                <label class="col-5 col-form-label text-right text-secondary">Kaubamärk</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductBrandId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.ProductBrands)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-5 col-form-label text-right text-secondary">Kollektsioon</label>
+                <div class="col-7">
+                    <select class="form-control"
+                            @bind="@Options.ProductCollectionId">
+                        <option value="0">-- Kõik --</option>
+                        @foreach (var item in _dropdowns.GetFilteredProductCollections(Options.ProductBrandId))
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-1">
+            <div class="row mb-2 justify-content-center">
+                <button class="btn btn-outline-secondary"@onclick="ResetFilter">Tühjenda</button>
+            </div>
+            <div class="row justify-content-center">
+                <button class="btn btn-outline-primary" @onclick="SubmitFilter">Näita</button>
+            </div>
+        </div>
     </div>
 }
 
@@ -38,17 +142,20 @@
         _dropdowns = await Http.GetFromJsonAsync<LocationInventoryDropdowns>("api/locationinventory/dropdowns");
     }
 
-    //private void HandleProductSourceTypeChanged(ChangeEventArgs args)
-    //{
-    //    if (int.TryParse(args.Value.ToString(), out var value))
-    //    {
-    //        Options.ProductSourceTypeId = value;
-    //        OnOptionsChanged.InvokeAsync();
-    //    }
-    //}
-
-    private void HandleClick()
+    private void SubmitFilter()
     {
         OnOptionsChanged.InvokeAsync();
+    }
+
+    private void ResetFilter()
+    {
+        var properties = typeof(LocationInventoryListOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties)
+        {
+            if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))
+            {
+                property.SetValue(Options, 0);
+            }
+        }
     }
 }

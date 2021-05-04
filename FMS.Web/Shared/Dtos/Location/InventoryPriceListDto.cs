@@ -1,6 +1,6 @@
 ﻿namespace FMS.Web.Shared.Dtos
 {
-    public class ProductPriceInPriceListDto
+    public class InventoryPriceListDto
     {
         public int ProductId { get; set; }
 

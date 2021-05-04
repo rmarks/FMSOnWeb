@@ -69,9 +69,9 @@
 
 @code {
     private bool _isOpen;
-    private ProductInventoryDetailsDto _details;
+    private InventoryDetailsDto _details;
 
-    [Parameter] public ProductInventoryInLocationDto Item { get; set; }
+    [Parameter] public LocationInventoryListDto Item { get; set; }
 
     private string ItemImage => Item == null ? null : $"img/products/{Item.ProductCode}.jpg";
 
@@ -79,7 +79,7 @@
     {
         if (Item != null)
         {
-            _details = await Http.GetFromJsonAsync<ProductInventoryDetailsDto>($"api/locationinventory/{Item.LocationId}/product/{Item.ProductId}");
+            _details = await Http.GetFromJsonAsync<InventoryDetailsDto>($"api/locationinventory/{Item.LocationId}/product/{Item.ProductId}");
             _isOpen = true;
         }
     }

@@ -60,7 +60,7 @@
 </div>
 
 @code {
-    private PagedResult<LocationListItemDto> _pagedLocations;
+    private PagedResult<LocationListDto> _pagedLocations;
     private LocationListOptions _options = new LocationListOptions { CurrentPage = 1, PageSize = 10 };
 
     protected override async Task OnInitializedAsync()
@@ -79,7 +79,7 @@
         var response = await Http.PostAsJsonAsync<LocationListOptions>("api/locations", _options);
         if (response.IsSuccessStatusCode)
         {
-            _pagedLocations = await response.Content.ReadFromJsonAsync <PagedResult<LocationListItemDto>>();
+            _pagedLocations = await response.Content.ReadFromJsonAsync <PagedResult<LocationListDto>>();
         }
     }
 

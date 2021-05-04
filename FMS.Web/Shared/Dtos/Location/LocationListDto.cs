@@ -1,6 +1,6 @@
 ﻿namespace FMS.Web.Shared.Dtos
 {
-    public class LocationListItemDto
+    public class LocationListDto
     {
         public int LocationId { get; set; }
 
