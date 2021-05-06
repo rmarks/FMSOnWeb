@@ -1,6 +1,8 @@
 ﻿using FMS.DAL;
+using FMS.ServiceLayer.ProductServices;
 using FMS.Web.Server.Extensions;
 using FMS.Web.Shared;
+using FMS.Web.Shared.Dropdowns;
 using FMS.Web.Shared.Dtos;
 using FMS.Web.Shared.Options;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +39,15 @@ namespace FMS.Web.Server.Controllers
                     Name = p.Name
                 })
                 .GetPagedAsync(options.CurrentPage, options.PageSize);
+        }
+
+        //POST: api/products/dropdowns
+        [HttpGet]
+        public async Task<ProductFilterDropdowns> GetProductFilterDropdowns()
+        {
+            var service = new ProductDropdownsService(_context);
+
+            return await service.GetProductFilterDropdowns();
         }
     }
 }
