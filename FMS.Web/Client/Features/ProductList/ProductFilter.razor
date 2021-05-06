@@ -1,0 +1,19 @@
+﻿<div class="drawer-wrapper @(_showFilter ? "slide" : "")">
+    <div class="drawer-mask"></div>
+
+    <div class="bg-light border rounded-bottom p-2">
+        <button class="btn btn-link" @onclick="@(() => _showFilter = true)">Muuda filtrit</button>
+    </div>    
+    
+    @if (_showFilter)
+    {
+<div class="drawer bg-light border rounded-bottom p-2">
+    <button class="btn btn-outline-secondary" @onclick="@(() => _showFilter = false)">Loobu</button>
+    <button class="btn btn-primary ml-2" @onclick="@(() => _showFilter = false)">Näita</button>
+</div>
+    }
+</div>
+
+@code {
+    private bool _showFilter;
+}

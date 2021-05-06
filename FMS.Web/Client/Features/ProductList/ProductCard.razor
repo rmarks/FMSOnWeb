@@ -1,0 +1,14 @@
+﻿<div class="card" style="width: 12.5rem; cursor: pointer;" @onclick="@(() => OnSelected.InvokeAsync(Product))">
+    <img class="card-img" src="@ImagePath">
+    <div class="card-img-overlay p-1 d-flex flex-column justify-content-between">
+        <h6 class="m-0 text-muted">@Product.Name</h6>
+        <h5 class="m-0">@Product.Code</h5>
+    </div>
+</div>
+
+@code {
+    [Parameter] public ProductListDto Product { get; set; }
+    [Parameter] public EventCallback<ProductListDto> OnSelected { get; set; }
+
+    private string ImagePath => $"img/products/{Product.Code}.jpg";
+}

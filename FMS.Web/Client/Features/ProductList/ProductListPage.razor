@@ -1,0 +1,51 @@
+﻿@page "/products"
+@inject HttpClient Http
+
+<nav class="navbar navbar-dark bg-secondary rounded-top zindex-like-drawer">
+    <span class="navbar-brand">Tooted</span>
+</nav>
+
+<ProductFilter />
+
+@if (_pagedProducts == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="grid my-5">
+        @foreach (var product in _pagedProducts.Results)
+        {
+            <ProductCard Product="@product" />
+        }
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <Pager Result="@_pagedProducts" OnPageChanged="HandlePagerPageChanged" />
+    </div>
+}
+
+@code {
+    private PagedResult<ProductListDto> _pagedProducts;
+    private ProductListOptions _options = new ProductListOptions { CurrentPage = 1, PageSize = 18 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateList();
+    }
+
+    private async Task UpdateList()
+    {
+        var response = await Http.PostAsJsonAsync<ProductListOptions>("api/products", _options);
+        if (response.IsSuccessStatusCode)
+        {
+            _pagedProducts = await response.Content.ReadFromJsonAsync<PagedResult<ProductListDto>>();
+        }
+    }
+
+    private async Task HandlePagerPageChanged(int pageNo)
+    {
+        _options.CurrentPage = pageNo;
+        await UpdateList();
+    }
+}
