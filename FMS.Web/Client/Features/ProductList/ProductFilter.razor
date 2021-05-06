@@ -1,19 +1,157 @@
-﻿<div class="drawer-wrapper @(_showFilter ? "slide" : "")">
+﻿@inject HttpClient Http
+@using System.Reflection
+
+<div class="drawer-wrapper @(_isOpen ? "slide" : "")">
     <div class="drawer-mask"></div>
 
     <div class="bg-light border rounded-bottom p-2">
-        <button class="btn btn-link" @onclick="@(() => _showFilter = true)">Muuda filtrit</button>
-    </div>    
-    
-    @if (_showFilter)
+        <button class="btn btn-link" @onclick="ShowFilter">Muuda filtrit</button>
+    </div>
+
+    @if (_isOpen)
     {
-<div class="drawer bg-light border rounded-bottom p-2">
-    <button class="btn btn-outline-secondary" @onclick="@(() => _showFilter = false)">Loobu</button>
-    <button class="btn btn-primary ml-2" @onclick="@(() => _showFilter = false)">Näita</button>
-</div>
+        <div class="drawer bg-light border rounded-bottom p-2">
+
+            @if (_dropdowns != null)
+            {
+                <div class="container py-3">
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-control mb-2" @bind="@_options.ProductStatusId">
+                                <option value="0">-- Vali olek --</option>
+                                @foreach (var item in _dropdowns.ProductStatuses)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <select class="form-control"
+                                    @bind="@_options.ProductMaterialId">
+                                <option value="0">-- Vali materjal --</option>
+                                @foreach (var item in _dropdowns.ProductMaterials)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-control mb-2"
+                                    @bind="@_options.ProductSourceTypeId">
+                                <option value="0">-- Vali lähtetüüp --</option>
+                                @foreach (var item in _dropdowns.ProductSourceTypes)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <select class="form-control"
+                                    @bind="@_options.ProductDestinationTypeId">
+                                <option value="0">-- Vali sihttüüp --</option>
+                                @foreach (var item in _dropdowns.ProductDestinationTypes)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-control mb-2"
+                                    @bind="@_options.ProductTypeId">
+                                <option value="0">-- Vali tüüp --</option>
+                                @foreach (var item in _dropdowns.ProductTypes)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <select class="form-control"
+                                    @bind="@_options.ProductGroupId">
+                                <option value="0">-- Vali grupp --</option>
+                                @foreach (var item in _dropdowns.GetFilteredProductGroups(_options.ProductTypeId))
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-control mb-2"
+                                    @bind="@_options.ProductBrandId">
+                                <option value="0">-- Vali kaubamärk --</option>
+                                @foreach (var item in _dropdowns.ProductBrands)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                            <select class="form-control"
+                                    @bind="@_options.ProductCollectionId">
+                                <option value="0">-- Vali kollektsioon --</option>
+                                @foreach (var item in _dropdowns.GetFilteredProductCollections(_options.ProductBrandId))
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="border-top mt-3 pt-3 d-flex">
+                        <button class="btn btn-outline-secondary mr-auto" @onclick="@(() => _isOpen = false)">Loobu</button>
+                        <button class="btn btn-outline-danger" @onclick="ResetFilter">Tühjenda filter</button>
+                        <button class="btn btn-primary ml-auto" @onclick="SubmitFilter">Näita</button>
+                    </div>
+                </div>
+            }
+
+        </div>
     }
 </div>
 
 @code {
-    private bool _showFilter;
+    private bool _isOpen;
+    private ProductFilterDropdowns _dropdowns;
+    private ProductListOptions _options;
+
+    [Parameter] public ProductListOptions Options { get; set; }
+    [Parameter] public EventCallback<ProductListOptions> OnOptionsChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _dropdowns = await Http.GetFromJsonAsync<ProductFilterDropdowns>("api/products/dropdown");
+    }
+
+    private void ShowFilter()
+    {
+        _isOpen = true;
+        _options = CreateCopy(Options);
+    }
+
+    private void SubmitFilter()
+    {
+        _isOpen = false;
+        OnOptionsChanged.InvokeAsync(_options);
+    }
+
+    private void ResetFilter()
+    {
+        var properties = typeof(ProductListOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties)
+        {
+            if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))
+            {
+                property.SetValue(_options, 0);
+            }
+        }
+    }
+
+    private static ProductListOptions CreateCopy(ProductListOptions source)
+    {
+        return new ProductListOptions
+        {
+            CurrentPage = source.CurrentPage,
+            PageSize = source.PageSize,
+            ProductStatusId = source.ProductStatusId,
+            ProductMaterialId = source.ProductMaterialId,
+            ProductSourceTypeId = source.ProductSourceTypeId,
+            ProductDestinationTypeId = source.ProductDestinationTypeId,
+            ProductTypeId = source.ProductTypeId,
+            ProductGroupId = source.ProductGroupId,
+            ProductBrandId = source.ProductBrandId,
+            ProductCollectionId = source.ProductCollectionId
+        };
+    }
 }

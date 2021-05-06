@@ -1,13 +1,10 @@
 ﻿using FMS.DAL;
 using FMS.ServiceLayer.ProductServices;
-using FMS.Web.Server.Extensions;
 using FMS.Web.Shared;
 using FMS.Web.Shared.Dropdowns;
 using FMS.Web.Shared.Dtos;
 using FMS.Web.Shared.Options;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Controllers
@@ -27,23 +24,14 @@ namespace FMS.Web.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<PagedResult<ProductListDto>>> GetProductList(ProductListOptions options)
         {
-            var query = _context.Products
-                .AsNoTracking();
+            var service = new ProductsService(_context);
 
-            return await query
-                .OrderBy(p => p.Code)
-                .Select(p => new ProductListDto
-                {
-                    Id = p.Id,
-                    Code = p.Code,
-                    Name = p.Name
-                })
-                .GetPagedAsync(options.CurrentPage, options.PageSize);
+            return await service.GetProductList(options);
         }
 
-        //POST: api/products/dropdowns
-        [HttpGet]
-        public async Task<ProductFilterDropdowns> GetProductFilterDropdowns()
+        //GET: api/products/dropdowns
+        [HttpGet("dropdown")]
+        public async Task<ActionResult<ProductFilterDropdowns>> GetProductFilterDropdowns()
         {
             var service = new ProductDropdownsService(_context);
 

@@ -5,7 +5,7 @@
     <span class="navbar-brand">Tooted</span>
 </nav>
 
-<ProductFilter />
+<ProductFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))" />
 
 @if (_pagedProducts == null)
 {
@@ -16,7 +16,7 @@ else
     <div class="grid my-5">
         @foreach (var product in _pagedProducts.Results)
         {
-            <ProductCard Product="@product" />
+            <ProductCard Product="@product" OnSelected="HandleProductSelected" />
         }
     </div>
 
@@ -47,5 +47,17 @@ else
     {
         _options.CurrentPage = pageNo;
         await UpdateList();
+    }
+
+    private async Task HandleFilterChanged(ProductListOptions options)
+    {
+        _options = options;
+        _options.CurrentPage = 1;
+        await UpdateList();
+    }
+
+    private void HandleProductSelected()
+    {
+
     }
 }
