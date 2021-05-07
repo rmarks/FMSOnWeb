@@ -30,7 +30,7 @@ namespace FMS.Web.Server.Controllers
         }
 
         //GET: api/products/dropdowns
-        [HttpGet("dropdown")]
+        [HttpGet("dropdowns")]
         public async Task<ActionResult<ProductFilterDropdowns>> GetProductFilterDropdowns()
         {
             var service = new ProductDropdownsService(_context);

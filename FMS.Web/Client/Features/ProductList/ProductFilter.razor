@@ -111,7 +111,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _dropdowns = await Http.GetFromJsonAsync<ProductFilterDropdowns>("api/products/dropdown");
+        _dropdowns = await Http.GetFromJsonAsync<ProductFilterDropdowns>("api/products/dropdowns");
     }
 
     private void ShowFilter()
