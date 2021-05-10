@@ -11,7 +11,8 @@ namespace FMS.DAL
 
         public DbSet<Location> Locations { get; set; }
         public DbSet<LocationType> LocationTypes { get; set; }
-        
+
+        public DbSet<ProductBase> ProductBases { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductStatus> ProductStatuses { get; set; }
         public DbSet<ProductMaterial> ProductMaterials { get; set; }
@@ -21,6 +22,8 @@ namespace FMS.DAL
         public DbSet<ProductGroup> ProductGroups { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductCollection> ProductCollections { get; set; }
+        public DbSet<ProductVariantType> ProductVariantTypes { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
 
         public DbSet<Inventory> Inventory { get; set; }
         public DbSet<PriceList> PriceLists { get; set; }

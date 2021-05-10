@@ -4,9 +4,9 @@
     {
         public int InventoryId { get; set; }
 
-        public int ProductId { get; set; }
-        public string ProductCode { get; set; }
-        public string ProductName { get; set; }
+        public int ProductBaseId { get; set; }
+        public string ProductBaseCode { get; set; }
+        public string ProductBaseName { get; set; }
 
         public int LocationId { get; set; }
 

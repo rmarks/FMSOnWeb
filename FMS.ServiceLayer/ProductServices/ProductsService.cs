@@ -20,7 +20,7 @@ namespace FMS.ServiceLayer.ProductServices
 
         public async Task<PagedResult<ProductListDto>> GetProductList(ProductListOptions options)
         {
-            var query = _context.Products
+            var query = _context.ProductBases
                 .AsNoTracking();
 
             if (options.ProductStatusId > 0)

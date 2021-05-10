@@ -1,5 +1,5 @@
 ﻿using FMS.DAL;
-using FMS.Web.Server.Extensions;
+using FMS.ServiceLayer.LocationServices;
 using FMS.Web.Shared;
 using FMS.Web.Shared.Dropdowns;
 using FMS.Web.Shared.Dtos;
@@ -26,6 +26,8 @@ namespace FMS.Web.Server.Controllers
         [HttpPost("{locationId}")]
         public async Task<ActionResult<LocationInventoryDto>> GetLocationInventory(int locationId, LocationInventoryListOptions options)
         {
+            var service = new InventoryService(_context);
+
             return new LocationInventoryDto
             {
                 LocationName = (await _context.Locations
@@ -33,7 +35,7 @@ namespace FMS.Web.Server.Controllers
                     .FirstOrDefaultAsync(l => l.Id == locationId))
                     .Name,
 
-                PagedInventory = await GetInventoryList(locationId, options)
+                PagedInventory = await service.GetLocationInventory(locationId, options)
             };
         }
 
@@ -41,7 +43,9 @@ namespace FMS.Web.Server.Controllers
         [HttpPost("{locationId}/list")]
         public async Task<ActionResult<PagedResult<LocationInventoryListDto>>> GetLocationInventoryList(int locationId, LocationInventoryListOptions options)
         {
-            return await GetInventoryList(locationId, options);
+            var service = new InventoryService(_context);
+
+            return await service.GetLocationInventory(locationId, options);
         }
 
         // GET: api/locationinventory/locationid/product/productid
@@ -57,9 +61,9 @@ namespace FMS.Web.Server.Controllers
                     {
                         InventoryId = i.Id,
                         LocationId = i.LocationId,
-                        ProductId = i.ProductId,
-                        ProductCode = i.Product.Code,
-                        ProductName = i.Product.Name,
+                        ProductBaseId = i.ProductId,
+                        ProductBaseCode = i.Product.Code,
+                        ProductBaseName = i.Product.Name,
                         StockQuantity = i.StockQuantity,
                         ReservedQuantity = i.ReservedQuantity
                     })
@@ -162,66 +166,5 @@ namespace FMS.Web.Server.Controllers
                     .ToListAsync()
             };
         }
-
-        #region helpers
-        private async Task<PagedResult<LocationInventoryListDto>> GetInventoryList(int locationId, LocationInventoryListOptions options)
-        {
-            var query = _context.Inventory
-                .AsNoTracking()
-                .Where(i => i.LocationId == locationId);
-
-            if (options.ProductStatusId > 0)
-            {
-                query = query.Where(i => i.Product.ProductStatusId == options.ProductStatusId);
-            };
-
-            if (options.ProductMaterialId > 0)
-            {
-                query = query.Where(i => i.Product.ProductMaterialId == options.ProductMaterialId);
-            };
-
-            if (options.ProductSourceTypeId > 0)
-            {
-                query = query.Where(i => i.Product.ProductSourceTypeId == options.ProductSourceTypeId);
-            };
-
-            if (options.ProductDestinationTypeId > 0)
-            {
-                query = query.Where(i => i.Product.ProductDestinationTypeId == options.ProductDestinationTypeId);
-            };
-
-            if (options.ProductGroupId > 0)
-            {
-                query = query.Where(i => i.Product.ProductGroupId == options.ProductGroupId);
-            }
-            else if (options.ProductTypeId > 0)
-            {
-                query = query.Where(i => i.Product.ProductTypeId == options.ProductTypeId);
-            };
-
-            if (options.ProductCollectionId > 0)
-            {
-                query = query.Where(i => i.Product.ProductCollectionId == options.ProductCollectionId);
-            }
-            else if (options.ProductBrandId > 0)
-            {
-                query = query.Where(i => i.Product.ProductBrandId == options.ProductBrandId);
-            };
-
-            return await query
-                .Select(i => new LocationInventoryListDto
-                {
-                    InventoryId = i.Id,
-                    LocationId = i.LocationId,
-                    ProductId = i.ProductId,
-                    ProductCode = i.Product.Code,
-                    ProductName = i.Product.Name,
-                    StockQuantity = i.StockQuantity,
-                    ReservedQuantity = i.ReservedQuantity
-                })
-                .OrderBy(l => l.ProductCode)
-                .GetPagedAsync(options.CurrentPage, options.PageSize);
-        }
-        #endregion
     }
 }
