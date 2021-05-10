@@ -117,13 +117,18 @@
     private void ShowFilter()
     {
         _isOpen = true;
-        _options = CreateCopy(Options);
+
+        _options = Options with { };
     }
 
     private void SubmitFilter()
     {
         _isOpen = false;
-        OnOptionsChanged.InvokeAsync(_options);
+
+        if (_options != Options)
+        {
+            OnOptionsChanged.InvokeAsync(_options);
+        }
     }
 
     private void ResetFilter()
@@ -136,22 +141,5 @@
                 property.SetValue(_options, 0);
             }
         }
-    }
-
-    private static ProductListOptions CreateCopy(ProductListOptions source)
-    {
-        return new ProductListOptions
-        {
-            CurrentPage = source.CurrentPage,
-            PageSize = source.PageSize,
-            ProductStatusId = source.ProductStatusId,
-            ProductMaterialId = source.ProductMaterialId,
-            ProductSourceTypeId = source.ProductSourceTypeId,
-            ProductDestinationTypeId = source.ProductDestinationTypeId,
-            ProductTypeId = source.ProductTypeId,
-            ProductGroupId = source.ProductGroupId,
-            ProductBrandId = source.ProductBrandId,
-            ProductCollectionId = source.ProductCollectionId
-        };
     }
 }

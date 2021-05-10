@@ -1,0 +1,63 @@
+﻿@using System.Reflection
+
+<div class="drawer-wrapper @(_isOpen ? "slide" : "")">
+    <div class="drawer-mask"></div>
+
+    <div class="bg-light border rounded-bottom p-2">
+        <button class="btn btn-link" @onclick="OpenFilter">Muuda filtrit</button>
+    </div>
+
+    @if (_isOpen)
+    {
+        <div class="drawer bg-light border rounded-bottom p-2">
+            
+            @ChildContent
+
+            <div class="border-top mt-3 pt-3 d-flex">
+                <button class="btn btn-outline-secondary mr-auto" @onclick="@(CloseFilter)">Loobu</button>
+                <button class="btn btn-outline-danger" @onclick="OnReset">Tühjenda filter</button>
+                <button class="btn btn-primary ml-auto" @onclick="SubmitFilter">Näita</button>
+            </div>
+        </div>
+    }
+
+</div>
+
+
+@code {
+    private bool _isOpen;
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public EventCallback OnOpen { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback OnReset { get; set; }
+
+    private void OpenFilter()
+    {
+        _isOpen = true;
+        OnOpen.InvokeAsync();
+    }
+
+    private void SubmitFilter()
+    {
+        _isOpen = false;
+        OnSubmit.InvokeAsync();
+    }
+
+    public void ResetFilter<TOptions>(TOptions options)
+    {
+        var properties = typeof(TOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties)
+        {
+            if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))
+            {
+                property.SetValue(options, 0);
+            }
+        }
+    }
+
+    public void CloseFilter()
+    {
+        _isOpen = false;
+    }
+}
