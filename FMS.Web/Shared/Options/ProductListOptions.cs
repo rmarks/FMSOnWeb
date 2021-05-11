@@ -1,11 +1,7 @@
 ﻿namespace FMS.Web.Shared.Options
 {
-    //public class ProductListOptions : PagedOptionsBase
-    public record ProductListOptions
+    public record ProductListOptions : PagedOptionsBase
     {
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
-
         public int ProductStatusId { get; set; }
         public int ProductMaterialId { get; set; }
         public int ProductSourceTypeId { get; set; }
