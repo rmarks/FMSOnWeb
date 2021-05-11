@@ -2,8 +2,6 @@
 {
     public class LocationInventoryListDto
     {
-        public int InventoryId { get; set; }
-
         public int ProductBaseId { get; set; }
         public string ProductBaseCode { get; set; }
         public string ProductBaseName { get; set; }

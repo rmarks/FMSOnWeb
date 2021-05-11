@@ -49,37 +49,38 @@ namespace FMS.Web.Server.Controllers
         }
 
         // GET: api/locationinventory/locationid/product/productid
-        [HttpGet("{locationId}/product/{productId}")]
-        public async Task<InventoryDetailsDto> GetProductDetails(int locationId, int productId)
+        [HttpGet("{locationId}/product/{productBaseId}")]
+        public async Task<InventoryDetailsDto> GetProductDetails(int locationId, int productBaseId)
         {
             return new InventoryDetailsDto
             {
-                ProductInventory = await _context.Inventory
+                ProductBaseInventory = await _context.Inventory
                     .AsNoTracking()
-                    .Where(i => i.LocationId == locationId && i.ProductId == productId)
-                    .Select(i => new LocationInventoryListDto
-                    {
-                        InventoryId = i.Id,
-                        LocationId = i.LocationId,
-                        ProductBaseId = i.ProductId,
-                        ProductBaseCode = i.Product.Code,
-                        ProductBaseName = i.Product.Name,
-                        StockQuantity = i.StockQuantity,
-                        ReservedQuantity = i.ReservedQuantity
-                    })
+                    .Where(i => i.LocationId == locationId && i.Product.ProductBaseId == productBaseId)
+                    .GroupBy(i => new { i.Product.ProductBase.Id, i.Product.ProductBase.Code, i.Product.ProductBase.Name, i.LocationId },
+                         i => i,
+                         (key, g) => new LocationInventoryListDto
+                         {
+                             ProductBaseId = key.Id,
+                             ProductBaseCode = key.Code,
+                             ProductBaseName = key.Name,
+                             LocationId = key.LocationId,
+                             StockQuantity = g.Sum(i => i.StockQuantity),
+                             ReservedQuantity = g.Sum(i => i.ReservedQuantity)
+                         })
                     .FirstOrDefaultAsync(),
 
                 ProductPrices = await _context.Prices
                     .AsNoTracking()
-                    .Where(p => p.ProductId == productId)
-                    .OrderBy(p => p.PriceList.Name)
+                    .Where(p => p.Product.ProductBaseId == productBaseId && p.PriceList.Name.ToLower().Contains("eesti"))
+                    .OrderBy(p => p.Product.Code)
                     .Select(p => new InventoryPriceListDto
                     {
                         ProductId = p.ProductId,
-                        PriceListId = p.PriceListId,
-                        PriceListName = p.PriceList.Name,
+                        ProductCode = p.Product.Code,
                         UnitPrice = p.UnitPrice,
-                        CurrencyCode = p.PriceList.CurrencyCode
+                        CurrencyCode = p.PriceList.CurrencyCode,
+                        PriceListId = p.PriceListId
                     })
                     .ToListAsync()
             };

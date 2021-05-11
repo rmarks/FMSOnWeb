@@ -1,5 +1,5 @@
-﻿.zindex-like-drawer {
-    z-index: 100;
+﻿.zindex-like-filter-drawer {
+    z-index: 90;
     position: relative;
 }
 

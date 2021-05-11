@@ -192,7 +192,7 @@ namespace FMS.DAL
             var products = new List<Product>();
             foreach (var pb in productBases)
             {
-                if (pb.ProductVariantTypeId == 0)
+                if (pb.ProductVariantTypeId is null)
                 {
                     products.Add(new Product { Code = pb.Code, Name = pb.Name, ProductBaseId = pb.Id });
                 }
@@ -236,7 +236,7 @@ namespace FMS.DAL
             var prices = new List<Price>();
             foreach (var priceList in priceLists)
             {
-                foreach (var product in productBases)
+                foreach (var product in products)
                 {
                     if (priceList.CurrencyCode == "EUR" || (priceList.CurrencyCode == "SEK" && random.Next(1, 10) < 6))
                     {
