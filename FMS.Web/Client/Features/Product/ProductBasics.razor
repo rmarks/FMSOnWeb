@@ -1,0 +1,157 @@
+﻿@inject HttpClient Http
+
+@if (_dropdowns is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="@_productBase" OnValidSubmit="SubmitForm">
+        <div class="row mb-3">
+            <div class="col-auto">
+                <div class="card" style="width: 268px;">
+                    <img class="card-img" src="@ImagePath">
+                </div>
+            </div>
+
+            <div class="col">
+                <FormSection>
+                    <FormFieldSet Width="col-2">
+                        <label class="font-weight-bold text-secondary">Kood</label>
+                        <InputText class="form-control" @bind-Value="@_productBase.Code" />
+                    </FormFieldSet>
+                    <FormFieldSet Width="col-4">
+                        <label class="font-weight-bold text-secondary">Nimi</label>
+                        <InputText class="form-control" @bind-Value="@_productBase.Name" />
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <FormSection>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Olek</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductStatusId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductStatuses)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Lähtetüüp</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductSourceTypeId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductSourceTypes)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Sihttüüp</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductDestinationTypeId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductDestinationTypes)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Materjal</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductMaterialId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductMaterials)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+
+            <div class="col-3">
+                <FormSection>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Tüüp</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductTypeId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductTypes)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Grupp</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductGroupId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.GetFilteredProductGroups(_productBase.ProductTypeId))
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Kaubamärk</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductBrandId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductBrands)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Kollektsioon</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductCollectionId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.GetFilteredProductCollections(_productBase.ProductBrandId))
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+
+            <div class="col">
+                <FormSection>
+                    <label class="font-weight-bold text-secondary">Kommentaarid</label>
+                    <InputTextArea class="form-control" @bind-Value="@_productBase.Comments" rows="12" />
+                </FormSection>
+            </div>
+        </div>
+
+        <div class="my-4">
+            <div class="row">
+                <div class="offset-4 col-8 text-right">
+                    <button class="btn btn-outline-secondary" type="button">Loobu</button>
+                    <button class="btn btn-primary" type="submit">Salvesta</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private ProductBaseDto _productBase = new ProductBaseDto();
+    private ProductFilterDropdowns _dropdowns;
+
+    //private string ImagePath => $"img/products/{Product.Code}.jpg";
+    private string ImagePath => $"img/products/00020282.jpg";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _dropdowns = await Http.GetFromJsonAsync<ProductFilterDropdowns>("api/products/dropdowns");
+    }
+
+    private void SubmitForm()
+    {
+
+    }
+}

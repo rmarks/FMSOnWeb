@@ -5,7 +5,9 @@
     <span class="navbar-brand">Tooted</span>
 </nav>
 
-<ProductFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))" />
+<ProductFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))">
+    <a class="btn btn-primary" href="products/add">Lisa toode</a>
+</ProductFilter>
 
 @if (_pagedProducts == null)
 {

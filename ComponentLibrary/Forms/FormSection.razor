@@ -1,0 +1,9 @@
+﻿<div class="card bg-light" style="height: 100%;">
+    <div class="card-body px-4">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

@@ -15,7 +15,7 @@ namespace FMS.Web.Shared.Dropdowns
         public IEnumerable<DropdownDto> ProductBrands { get; set; }
         public IEnumerable<ChildDropdownDto> ProductCollections { get; set; }
 
-        public IEnumerable<ChildDropdownDto> GetFilteredProductGroups(int productTypeId)
+        public IEnumerable<ChildDropdownDto> GetFilteredProductGroups(int? productTypeId)
         {
             if (productTypeId > 0)
             {
@@ -25,7 +25,7 @@ namespace FMS.Web.Shared.Dropdowns
             return Enumerable.Empty<ChildDropdownDto>();
         }
 
-        public IEnumerable<ChildDropdownDto> GetFilteredProductCollections(int productBrandId)
+        public IEnumerable<ChildDropdownDto> GetFilteredProductCollections(int? productBrandId)
         {
             if (productBrandId > 0)
             {

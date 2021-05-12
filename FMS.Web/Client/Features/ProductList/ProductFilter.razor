@@ -4,8 +4,11 @@
 <div class="drawer-wrapper @(_isOpen ? "slide" : "")">
     <div class="drawer-mask"></div>
 
-    <div class="bg-light border rounded-bottom p-2">
+    <div class="bg-light border rounded-bottom p-2 d-flex justify-content-between align-items-center">
         <button class="btn btn-link" @onclick="ShowFilter">Muuda filtrit</button>
+        <div>
+            @ChildContent
+        </div>
     </div>
 
     @if (_isOpen)
@@ -108,6 +111,7 @@
 
     [Parameter] public ProductListOptions Options { get; set; }
     [Parameter] public EventCallback<ProductListOptions> OnOptionsChanged { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
