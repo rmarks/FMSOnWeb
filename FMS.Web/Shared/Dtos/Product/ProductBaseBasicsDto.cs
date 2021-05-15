@@ -2,7 +2,7 @@
 
 namespace FMS.Web.Shared.Dtos
 {
-    public class ProductBaseDto
+    public class ProductBaseBasicsDto
     {
         public int Id { get; set; }
 
@@ -48,9 +48,5 @@ namespace FMS.Web.Shared.Dtos
             }
         }
         public int? ProductCollectionId { get; set; }
-        
-        public int? ProductVariantTypeId { get; set; }
-
-        //public IList<ProductDto> Products { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using FMS.Web.Shared.Dropdowns;
 using FMS.Web.Shared.Dtos;
 using FMS.Web.Shared.Options;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Controllers
@@ -27,6 +29,31 @@ namespace FMS.Web.Server.Controllers
             var service = new ProductsService(_context);
 
             return await service.GetProductList(options);
+        }
+
+        //GET: api/products/productbaseid
+        [HttpGet("{id}")]
+        public async Task<ProductBaseBasicsDto> GetProductBaseBasics(int id)
+        {
+            return await _context.ProductBases
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => new ProductBaseBasicsDto
+                {
+                    Id = p.Id,
+                    Code = p.Code,
+                    Name = p.Name,
+                    Comments = p.Comments,
+                    ProductStatusId = p.ProductStatusId,
+                    ProductSourceTypeId = p.ProductSourceTypeId,
+                    ProductDestinationTypeId = p.ProductDestinationTypeId,
+                    ProductMaterialId = p.ProductMaterialId,
+                    ProductTypeId = p.ProductTypeId,
+                    ProductGroupId = p.ProductGroupId,
+                    ProductBrandId = p.ProductBrandId,
+                    ProductCollectionId = p.ProductCollectionId
+                })
+                .FirstOrDefaultAsync();
         }
 
         //GET: api/products/dropdowns
