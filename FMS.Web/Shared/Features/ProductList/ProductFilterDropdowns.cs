@@ -1,8 +1,8 @@
-﻿using FMS.Web.Shared.Dtos;
+﻿using FMS.Web.Shared.Features.Shared;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FMS.Web.Shared.Dropdowns
+namespace FMS.Web.Shared.Features.ProductList
 {
     public class ProductFilterDropdowns
     {

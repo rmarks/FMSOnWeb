@@ -1,4 +1,4 @@
-﻿using FMS.Web.Shared.Options;
+﻿using FMS.Web.Shared.Features.LocationList;
 
 namespace FMS.Web.Client.Features.Shared
 {

@@ -1,4 +1,6 @@
-﻿namespace FMS.Web.Shared.Options
+﻿using FMS.Web.Shared.Features.Shared;
+
+namespace FMS.Web.Shared.Features.ProductList
 {
     public record ProductListOptions : PagedOptionsBase
     {

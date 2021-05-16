@@ -1,4 +1,4 @@
-﻿namespace FMS.Web.Shared
+﻿namespace FMS.Web.Shared.Features.Shared
 {
     public record PagedOptionsBase
     {

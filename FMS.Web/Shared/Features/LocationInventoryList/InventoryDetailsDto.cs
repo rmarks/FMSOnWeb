@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FMS.Web.Shared.Dtos
+namespace FMS.Web.Shared.Features.LocationInventoryList
 {
     public class InventoryDetailsDto
     {

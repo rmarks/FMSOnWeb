@@ -1,9 +1,8 @@
 ﻿using FMS.DAL;
 using FMS.ServiceLayer.LocationServices;
 using FMS.Web.Shared;
-using FMS.Web.Shared.Dropdowns;
-using FMS.Web.Shared.Dtos;
-using FMS.Web.Shared.Options;
+using FMS.Web.Shared.Features.LocationInventoryList;
+using FMS.Web.Shared.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

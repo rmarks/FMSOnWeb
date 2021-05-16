@@ -1,6 +1,6 @@
 ﻿using FMS.DAL;
-using FMS.Web.Shared.Dropdowns;
-using FMS.Web.Shared.Dtos;
+using FMS.Web.Shared.Features.ProductList;
+using FMS.Web.Shared.Features.Shared;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;

@@ -1,8 +1,8 @@
 ﻿using FMS.DAL;
 using FMS.Web.Server.Extensions;
 using FMS.Web.Shared;
-using FMS.Web.Shared.Dtos;
-using FMS.Web.Shared.Options;
+using FMS.Web.Shared.Features.LocationList;
+using FMS.Web.Shared.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

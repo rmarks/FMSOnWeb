@@ -1,4 +1,6 @@
-﻿namespace FMS.Web.Shared.Dtos
+﻿using FMS.Web.Shared.Features.Shared;
+
+namespace FMS.Web.Shared.Features.LocationInventoryList
 {
     public class LocationInventoryDto
     {

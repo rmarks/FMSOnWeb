@@ -1,4 +1,4 @@
-﻿using FMS.Web.Shared;
+﻿using FMS.Web.Shared.Features.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;

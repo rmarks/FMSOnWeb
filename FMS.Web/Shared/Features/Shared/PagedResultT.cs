@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FMS.Web.Shared
+namespace FMS.Web.Shared.Features.Shared
 {
     public class PagedResult<T> : PagedResultBase where T : class
     {

@@ -1,8 +1,7 @@
 ﻿using FMS.DAL;
 using FMS.ServiceLayer.Extensions;
-using FMS.Web.Shared;
-using FMS.Web.Shared.Dtos;
-using FMS.Web.Shared.Options;
+using FMS.Web.Shared.Features.LocationInventoryList;
+using FMS.Web.Shared.Features.Shared;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;

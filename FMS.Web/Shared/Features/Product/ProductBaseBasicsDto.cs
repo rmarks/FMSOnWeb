@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FMS.Web.Shared.Dtos
+namespace FMS.Web.Shared.Features.Product
 {
     public class ProductBaseBasicsDto
     {

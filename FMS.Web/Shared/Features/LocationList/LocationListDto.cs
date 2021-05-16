@@ -1,4 +1,4 @@
-﻿namespace FMS.Web.Shared.Dtos
+﻿namespace FMS.Web.Shared.Features.LocationList
 {
     public class LocationListDto
     {
