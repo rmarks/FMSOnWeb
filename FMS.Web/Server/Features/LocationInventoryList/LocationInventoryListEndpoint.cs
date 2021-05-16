@@ -1,27 +1,42 @@
-﻿using FMS.DAL;
-using FMS.ServiceLayer.Extensions;
+﻿using Ardalis.ApiEndpoints;
+using FMS.DAL;
+using FMS.Web.Server.Extensions;
 using FMS.Web.Shared.Features.LocationInventoryList;
-using FMS.Web.Shared.Features.Shared;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace FMS.ServiceLayer.LocationServices
+namespace FMS.Web.Server.Features.LocationInventoryList
 {
-    public class InventoryService
+    public class LocationInventoryListEndpoint : BaseAsyncEndpoint.WithRequest<LocationInventoryListRequest>.WithResponse<LocationInventoryListRequest.Response>
     {
         private readonly FMSContext _context;
 
-        public InventoryService(FMSContext context)
+        public LocationInventoryListEndpoint(FMSContext context)
         {
             _context = context;
         }
 
-        public async Task<PagedResult<LocationInventoryListDto>> GetLocationInventory(int locationId, InventoryFilterOptions options)
+        [HttpPost("api/locationinventory")]
+        public override async Task<ActionResult<LocationInventoryListRequest.Response>> HandleAsync(LocationInventoryListRequest request, CancellationToken cancellationToken = default)
         {
+            string locationName = "";
+
+            if (request.IsFirstRequest)
+            {
+                locationName = (await _context.Locations
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(l => l.Id == request.LocationId))
+                    .Name;
+            }
+
             var query = _context.Inventory
                 .AsNoTracking()
-                .Where(i => i.LocationId == locationId);
+                .Where(i => i.LocationId == request.LocationId);
+
+            var options = request.Options;
 
             if (options.ProductStatusId > 0)
             {
@@ -61,20 +76,22 @@ namespace FMS.ServiceLayer.LocationServices
                 query = query.Where(i => i.Product.ProductBase.ProductBrandId == options.ProductBrandId);
             };
 
-            return await query
-                .GroupBy(i => new { i.Product.ProductBase.Id, i.Product.ProductBase.Code, i.Product.ProductBase.Name, i.LocationId } ,
-                         i => i, 
+            var pagedInventory = await query
+                .GroupBy(i => new { i.Product.ProductBase.Id, i.Product.ProductBase.Code, i.Product.ProductBase.Name, i.LocationId },
+                         i => i,
                          (key, g) => new LocationInventoryListDto
                          {
-                            ProductBaseId = key.Id,
-                            ProductBaseCode = key.Code,
-                            ProductBaseName = key.Name,
-                            LocationId = key.LocationId,
-                            StockQuantity = g.Sum(i => i.StockQuantity),
-                            ReservedQuantity = g.Sum(i => i.ReservedQuantity)
+                             ProductBaseId = key.Id,
+                             ProductBaseCode = key.Code,
+                             ProductBaseName = key.Name,
+                             LocationId = key.LocationId,
+                             StockQuantity = g.Sum(i => i.StockQuantity),
+                             ReservedQuantity = g.Sum(i => i.ReservedQuantity)
                          })
                 .OrderBy(l => l.ProductBaseCode)
                 .GetPagedAsync(options.CurrentPage, options.PageSize);
+
+            return new LocationInventoryListRequest.Response(locationName, pagedInventory);
         }
     }
 }

@@ -7,7 +7,7 @@
         <NavLink class="btn btn-primary ml-auto" href="locations/return">Tagasi</NavLink>
     </nav>
 
-    <LocationInventoryFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))" />
+    <InventoryFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))" />
 
     @if (_pagedInventory == null)
     {
@@ -15,7 +15,7 @@
     }
     else
     {
-        <ProductDetails Item="@SelectedItem" />
+        <InventoryDetails Item="@SelectedItem" />
 
         <div class="grid my-5">
             @foreach (var item in _pagedInventory.Results)
@@ -33,7 +33,7 @@
 
 @code {
     private PagedResult<LocationInventoryListDto> _pagedInventory;
-    private LocationInventoryListOptions _options = new LocationInventoryListOptions { CurrentPage = 1, PageSize = 18 };
+    private InventoryFilterOptions _options = new InventoryFilterOptions { CurrentPage = 1, PageSize = 18 };
     private LocationInventoryListDto _selectedItem;
     private string _locationName;
 
@@ -57,10 +57,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}", _options);
+        //var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}", _options);
+        var response = await Http.PostAsJsonAsync<LocationInventoryListRequest>("api/locationinventory", new LocationInventoryListRequest(Id, _options, true));
         if (response.IsSuccessStatusCode)
         {
-            var dto = await response.Content.ReadFromJsonAsync<LocationInventoryDto>();
+            var dto = await response.Content.ReadFromJsonAsync<LocationInventoryListRequest.Response>();
             _locationName = dto.LocationName;
             _pagedInventory = dto.PagedInventory;
         }
@@ -69,10 +70,12 @@
     #region helpers
     private async Task UpdateList()
     {
-        var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}/list", _options);
+        //var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}/list", _options);
+        var response = await Http.PostAsJsonAsync<LocationInventoryListRequest>("api/locationinventory", new LocationInventoryListRequest(Id, _options));
         if (response.IsSuccessStatusCode)
         {
-            _pagedInventory = await response.Content.ReadFromJsonAsync<PagedResult<LocationInventoryListDto>>();
+            var dto = await response.Content.ReadFromJsonAsync<LocationInventoryListRequest.Response>();
+            _pagedInventory = dto.PagedInventory;
         }
     }
     #endregion
@@ -84,7 +87,7 @@
         await UpdateList();
     }
 
-    private async Task HandleFilterChanged(LocationInventoryListOptions options)
+    private async Task HandleFilterChanged(InventoryFilterOptions options)
     {
         _options = options;
         _options.CurrentPage = 1;

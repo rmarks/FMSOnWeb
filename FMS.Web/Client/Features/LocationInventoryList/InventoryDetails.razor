@@ -79,8 +79,16 @@
     {
         if (Item != null)
         {
-            _details = await Http.GetFromJsonAsync<InventoryDetailsDto>($"api/locationinventory/{Item.LocationId}/product/{Item.ProductBaseId}");
-            _isOpen = true;
+            //_details = await Http.GetFromJsonAsync<InventoryDetailsDto>($"api/locationinventory/{Item.LocationId}/product/{Item.ProductBaseId}");
+            //_isOpen = true;
+
+            var response = await Http.PostAsJsonAsync<InventoryDetailsRequest>("api/locationinventory/details", new InventoryDetailsRequest(Item.LocationId, Item.ProductBaseId));
+            if (response.IsSuccessStatusCode)
+            {
+                var dto = await response.Content.ReadFromJsonAsync<InventoryDetailsRequest.Response>();
+                _details = dto.InventoryDetails;
+                _isOpen = true;
+            }
         }
     }
 }

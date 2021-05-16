@@ -126,16 +126,16 @@
 
 
 @code {
-    private LocationInventoryDropdowns _dropdowns;
-    private LocationInventoryListOptions _options;
+    private InventoryFilterDropdowns _dropdowns;
+    private InventoryFilterOptions _options;
     private FilterDrawer _filterDrawer;
 
-    [Parameter] public LocationInventoryListOptions Options { get; set; }
-    [Parameter] public EventCallback<LocationInventoryListOptions> OnOptionsChanged { get; set; }
+    [Parameter] public InventoryFilterOptions Options { get; set; }
+    [Parameter] public EventCallback<InventoryFilterOptions> OnOptionsChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _dropdowns = await Http.GetFromJsonAsync<LocationInventoryDropdowns>("api/locationinventory/dropdowns");
+        _dropdowns = await Http.GetFromJsonAsync<InventoryFilterDropdowns>("api/locationinventory/dropdowns");
     }
 
     private void HandleOpen()

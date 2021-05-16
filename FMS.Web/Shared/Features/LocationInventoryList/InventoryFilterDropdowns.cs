@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FMS.Web.Shared.Features.LocationInventoryList
 {
-    public class LocationInventoryDropdowns
+    public class InventoryFilterDropdowns
     {
         public IEnumerable<DropdownDto> ProductStatuses { get; set; }
         public IEnumerable<DropdownDto> ProductMaterials { get; set; }
