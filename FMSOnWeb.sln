@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.DAL", "FMS.DAL\FMS.DAL.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentLibrary", "ComponentLibrary\ComponentLibrary.csproj", "{AC98CAD0-863C-47A0-8ED0-18014341B33C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.ServiceLayer", "FMS.ServiceLayer\FMS.ServiceLayer.csproj", "{5C2A5B44-4E39-48C6-94AD-3DE89116F2A9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{AC98CAD0-863C-47A0-8ED0-18014341B33C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC98CAD0-863C-47A0-8ED0-18014341B33C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC98CAD0-863C-47A0-8ED0-18014341B33C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C2A5B44-4E39-48C6-94AD-3DE89116F2A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C2A5B44-4E39-48C6-94AD-3DE89116F2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C2A5B44-4E39-48C6-94AD-3DE89116F2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C2A5B44-4E39-48C6-94AD-3DE89116F2A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\FMS.DAL\FMS.DAL.csproj" />
-    <ProjectReference Include="..\..\FMS.ServiceLayer\FMS.ServiceLayer.csproj" />
     <ProjectReference Include="..\Client\FMS.Web.Client.csproj" />
     <ProjectReference Include="..\Shared\FMS.Web.Shared.csproj" />
   </ItemGroup>
