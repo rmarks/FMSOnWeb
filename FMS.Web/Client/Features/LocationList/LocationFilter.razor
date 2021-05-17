@@ -19,7 +19,7 @@
 @code {
     private IEnumerable<DropdownDto> _locationTypes;
 
-    [Parameter] public LocationListOptions Options { get; set; }
+    [Parameter] public LocationFilterOptions Options { get; set; }
     [Parameter] public EventCallback OnOptionsChanged { get; set; }
 
     protected override async Task OnInitializedAsync()

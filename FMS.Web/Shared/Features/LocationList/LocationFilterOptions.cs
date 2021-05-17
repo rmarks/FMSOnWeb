@@ -2,7 +2,7 @@
 
 namespace FMS.Web.Shared.Features.LocationList
 {
-    public record LocationListOptions : PagedOptionsBase
+    public record LocationFilterOptions : PagedOptionsBase
     {
         public int LocationTypeId { get; set; }
     }

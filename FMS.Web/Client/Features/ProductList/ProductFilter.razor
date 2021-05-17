@@ -107,10 +107,10 @@
 @code {
     private bool _isOpen;
     private ProductFilterDropdowns _dropdowns;
-    private ProductListOptions _options;
+    private ProductFilterOptions _options;
 
-    [Parameter] public ProductListOptions Options { get; set; }
-    [Parameter] public EventCallback<ProductListOptions> OnOptionsChanged { get; set; }
+    [Parameter] public ProductFilterOptions Options { get; set; }
+    [Parameter] public EventCallback<ProductFilterOptions> OnOptionsChanged { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -137,7 +137,7 @@
 
     private void ResetFilter()
     {
-        var properties = typeof(ProductListOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = typeof(ProductFilterOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach (var property in properties)
         {
             if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))

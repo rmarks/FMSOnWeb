@@ -1,24 +1,29 @@
-﻿using FMS.DAL;
-using FMS.ServiceLayer.Extensions;
+﻿using Ardalis.ApiEndpoints;
+using FMS.DAL;
+using FMS.Web.Server.Extensions;
 using FMS.Web.Shared.Features.ProductList;
-using FMS.Web.Shared.Features.Shared;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace FMS.ServiceLayer.ProductServices
+namespace FMS.Web.Server.Features.ProductList
 {
-    public class ProductsService
+    public class ProductListEndpoint : BaseAsyncEndpoint.WithRequest<ProductListRequest>.WithResponse<ProductListRequest.Response>
     {
         private readonly FMSContext _context;
 
-        public ProductsService(FMSContext context)
+        public ProductListEndpoint(FMSContext context)
         {
             _context = context;
         }
 
-        public async Task<PagedResult<ProductListDto>> GetProductList(ProductFilterOptions options)
+        [HttpPost("api/products")]
+        public override async Task<ActionResult<ProductListRequest.Response>> HandleAsync(ProductListRequest request, CancellationToken cancellationToken = default)
         {
+            var options = request.Options;
+
             var query = _context.ProductBases
                 .AsNoTracking();
 
@@ -60,7 +65,7 @@ namespace FMS.ServiceLayer.ProductServices
                 query = query.Where(p => p.ProductBrandId == options.ProductBrandId);
             };
 
-            return await query
+            var pagedProducts = await query
                 .OrderBy(p => p.Code)
                 .Select(p => new ProductListDto
                 {
@@ -69,6 +74,8 @@ namespace FMS.ServiceLayer.ProductServices
                     Name = p.Name
                 })
                 .GetPagedAsync(options.CurrentPage, options.PageSize);
+
+            return new ProductListRequest.Response(pagedProducts);
         }
     }
 }

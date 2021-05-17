@@ -61,7 +61,7 @@
 
 @code {
     private PagedResult<LocationListDto> _pagedLocations;
-    private LocationListOptions _options = new LocationListOptions { CurrentPage = 1, PageSize = 10 };
+    private LocationFilterOptions _options = new LocationFilterOptions { CurrentPage = 1, PageSize = 10 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,10 +76,11 @@
     #region helpers
     private async Task UpdateList()
     {
-        var response = await Http.PostAsJsonAsync<LocationListOptions>("api/locations", _options);
+        var response = await Http.PostAsJsonAsync<LocationListRequest>("api/locations", new LocationListRequest(_options));
         if (response.IsSuccessStatusCode)
         {
-            _pagedLocations = await response.Content.ReadFromJsonAsync <PagedResult<LocationListDto>>();
+            var dto = await response.Content.ReadFromJsonAsync <LocationListRequest.Response>();
+            _pagedLocations = dto.PagedLocations;
         }
     }
 

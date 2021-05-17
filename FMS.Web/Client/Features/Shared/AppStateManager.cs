@@ -4,8 +4,8 @@ namespace FMS.Web.Client.Features.Shared
 {
     public class AppStateManager
     {
-        private LocationListOptions _locationListOptions;
-        public LocationListOptions LocationListOptions 
+        private LocationFilterOptions _locationListOptions;
+        public LocationFilterOptions LocationListOptions 
         {
             get
             {

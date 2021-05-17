@@ -139,7 +139,7 @@ else
 }
 
 @code {
-    private ProductBaseBasicsDto _productBase = new ProductBaseBasicsDto();
+    private ProductBasicsDto _productBase = new ProductBasicsDto();
     private ProductFilterDropdowns _dropdowns;
     private string _imagePath = "img/products/BlankImage.png";
 
@@ -149,7 +149,7 @@ else
     {
         if (Id > 0)
         {
-            _productBase = await Http.GetFromJsonAsync<ProductBaseBasicsDto>($"api/products/{Id}");
+            _productBase = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}");
             _imagePath = $"img/products/{_productBase.Code}.jpg";
         }
 

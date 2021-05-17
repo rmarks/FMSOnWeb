@@ -2,7 +2,7 @@
 
 namespace FMS.Web.Shared.Features.Product
 {
-    public class ProductBaseProductsDto
+    public class ProductVariantsDto
     {
         public int Id { get; set; }
         public int? ProductVariantTypeId { get; set; }

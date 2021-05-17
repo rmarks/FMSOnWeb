@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.LocationList
 {
-    public class GetDropdownsEndpoint : BaseAsyncEndpoint.WithoutRequest.WithResponse<IEnumerable<DropdownDto>>
+    public class LocationFilterDropdownsEndpoint : BaseAsyncEndpoint.WithoutRequest.WithResponse<IEnumerable<DropdownDto>>
     {
         private readonly FMSContext _context;
 
-        public GetDropdownsEndpoint(FMSContext context)
+        public LocationFilterDropdownsEndpoint(FMSContext context)
         {
             _context = context;
         }

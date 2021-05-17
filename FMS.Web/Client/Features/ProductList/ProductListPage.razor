@@ -30,7 +30,7 @@ else
 
 @code {
     private PagedResult<ProductListDto> _pagedProducts;
-    private ProductListOptions _options = new ProductListOptions { CurrentPage = 1, PageSize = 18 };
+    private ProductFilterOptions _options = new ProductFilterOptions { CurrentPage = 1, PageSize = 18 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,10 +39,11 @@ else
 
     private async Task UpdateList()
     {
-        var response = await Http.PostAsJsonAsync<ProductListOptions>("api/products", _options);
+        var response = await Http.PostAsJsonAsync<ProductListRequest>("api/products", new ProductListRequest(_options));
         if (response.IsSuccessStatusCode)
         {
-            _pagedProducts = await response.Content.ReadFromJsonAsync<PagedResult<ProductListDto>>();
+            var dto = await response.Content.ReadFromJsonAsync<ProductListRequest.Response>();
+            _pagedProducts = dto.PagedProducts;
         }
     }
 
@@ -52,7 +53,7 @@ else
         await UpdateList();
     }
 
-    private async Task HandleFilterChanged(ProductListOptions options)
+    private async Task HandleFilterChanged(ProductFilterOptions options)
     {
         _options = options;
         _options.CurrentPage = 1;
