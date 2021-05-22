@@ -18,7 +18,7 @@ namespace FMS.Web.Server.Features.Product
             _context = context;
         }
 
-        [HttpGet("api/productbasics/{id}")]
+        [HttpGet("api/product/productbasics/{id}")]
         public override async Task<ActionResult<ProductBasicsDto>> HandleAsync(int id, CancellationToken cancellationToken = default)
         {
             return await _context.ProductBases

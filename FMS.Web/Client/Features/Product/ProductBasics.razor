@@ -149,7 +149,7 @@ else
     {
         if (Id > 0)
         {
-            _productBase = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}");
+            _productBase = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/product/productbasics/{Id}");
             _imagePath = $"img/products/{_productBase.Code}.jpg";
         }
 
