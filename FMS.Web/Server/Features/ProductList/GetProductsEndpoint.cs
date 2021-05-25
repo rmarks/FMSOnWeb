@@ -10,20 +10,18 @@ using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.ProductList
 {
-    public class ProductListEndpoint : BaseAsyncEndpoint.WithRequest<ProductListRequest>.WithResponse<ProductListRequest.Response>
+    public class GetProductsEndpoint : BaseAsyncEndpoint.WithRequest<ProductFilterOptionsVm>.WithResponse<GetProductsRequest.Response>
     {
         private readonly FMSContext _context;
 
-        public ProductListEndpoint(FMSContext context)
+        public GetProductsEndpoint(FMSContext context)
         {
             _context = context;
         }
 
-        [HttpPost("api/products")]
-        public override async Task<ActionResult<ProductListRequest.Response>> HandleAsync(ProductListRequest request, CancellationToken cancellationToken = default)
+        [HttpPost(GetProductsRequest.RouteTemplate)]
+        public override async Task<ActionResult<GetProductsRequest.Response>> HandleAsync(ProductFilterOptionsVm options, CancellationToken cancellationToken = default)
         {
-            var options = request.Options;
-
             var query = _context.ProductBases
                 .AsNoTracking();
 
@@ -67,7 +65,7 @@ namespace FMS.Web.Server.Features.ProductList
 
             var pagedProducts = await query
                 .OrderBy(p => p.Code)
-                .Select(p => new ProductListDto
+                .Select(p => new ProductLisItemVm
                 {
                     Id = p.Id,
                     Code = p.Code,
@@ -75,7 +73,7 @@ namespace FMS.Web.Server.Features.ProductList
                 })
                 .GetPagedAsync(options.CurrentPage, options.PageSize);
 
-            return new ProductListRequest.Response(pagedProducts);
+            return Ok(new GetProductsRequest.Response(pagedProducts));
         }
     }
 }

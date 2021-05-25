@@ -10,19 +10,19 @@ using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.ProductList
 {
-    public class ProductFilterDropdownsEndpoint : BaseAsyncEndpoint.WithoutRequest.WithResponse<ProductFilterDropdowns>
+    public class GetProductFilterDropdownsEndpoint : BaseAsyncEndpoint.WithoutRequest.WithResponse<GetProductFilterDropdownsRequest.Response>
     {
         private readonly FMSContext _context;
 
-        public ProductFilterDropdownsEndpoint(FMSContext context)
+        public GetProductFilterDropdownsEndpoint(FMSContext context)
         {
             _context = context;
         }
 
-        [HttpGet("api/products/dropdowns")]
-        public override async Task<ActionResult<ProductFilterDropdowns>> HandleAsync(CancellationToken cancellationToken = default)
+        [HttpGet(GetProductFilterDropdownsRequest.RouteTemplate)]
+        public override async Task<ActionResult<GetProductFilterDropdownsRequest.Response>> HandleAsync(CancellationToken cancellationToken = default)
         {
-            return new ProductFilterDropdowns
+            var dropdowns = new ProductFilterDropdownsVm
             {
                 ProductStatuses = await _context.ProductStatuses
                     .AsNoTracking()
@@ -98,6 +98,8 @@ namespace FMS.Web.Server.Features.ProductList
                     })
                     .ToListAsync()
             };
+
+            return Ok(new GetProductFilterDropdownsRequest.Response(dropdowns));
         }
     }
 }

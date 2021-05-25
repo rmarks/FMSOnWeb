@@ -1,4 +1,4 @@
-﻿@inject HttpClient Http
+﻿@inject IMediator Mediator
 @using System.Reflection
 
 <div class="drawer-wrapper @(_isOpen ? "slide" : "")">
@@ -106,16 +106,20 @@
 
 @code {
     private bool _isOpen;
-    private ProductFilterDropdowns _dropdowns;
-    private ProductFilterOptions _options;
+    private ProductFilterDropdownsVm _dropdowns;
+    private ProductFilterOptionsVm _options;
 
-    [Parameter] public ProductFilterOptions Options { get; set; }
-    [Parameter] public EventCallback<ProductFilterOptions> OnOptionsChanged { get; set; }
+    [Parameter] public ProductFilterOptionsVm Options { get; set; }
+    [Parameter] public EventCallback<ProductFilterOptionsVm> OnOptionsChanged { get; set; }
     [Parameter] public RenderFragment ChildContent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _dropdowns = await Http.GetFromJsonAsync<ProductFilterDropdowns>("api/products/dropdowns");
+        var response = await Mediator.Send(new GetProductFilterDropdownsRequest());
+        if (response.Dropdowns is not null)
+        {
+            _dropdowns = response.Dropdowns;
+        }
     }
 
     private void ShowFilter()
@@ -137,7 +141,7 @@
 
     private void ResetFilter()
     {
-        var properties = typeof(ProductFilterOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = typeof(ProductFilterOptionsVm).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach (var property in properties)
         {
             if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))

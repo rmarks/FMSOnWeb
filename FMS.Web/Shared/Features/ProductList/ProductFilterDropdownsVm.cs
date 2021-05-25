@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FMS.Web.Shared.Features.ProductList
 {
-    public class ProductFilterDropdowns
+    public class ProductFilterDropdownsVm
     {
         public IEnumerable<DropdownDto> ProductStatuses { get; set; }
         public IEnumerable<DropdownDto> ProductMaterials { get; set; }

@@ -2,7 +2,7 @@
 
 namespace FMS.Web.Shared.Features.ProductList
 {
-    public record ProductFilterOptions : PagedOptionsBase
+    public record ProductFilterOptionsVm : PagedOptionsBase
     {
         public int ProductStatusId { get; set; }
         public int ProductMaterialId { get; set; }

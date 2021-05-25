@@ -1,6 +1,6 @@
 ﻿namespace FMS.Web.Shared.Features.ProductList
 {
-    public class ProductListDto
+    public class ProductLisItemVm
     {
         public int Id { get; set; }
         public string Code { get; set; }

@@ -7,8 +7,8 @@
 </div>
 
 @code {
-    [Parameter] public ProductListDto Product { get; set; }
-    [Parameter] public EventCallback<ProductListDto> OnSelected { get; set; }
+    [Parameter] public ProductLisItemVm Product { get; set; }
+    [Parameter] public EventCallback<ProductLisItemVm> OnSelected { get; set; }
 
     private string ImagePath => $"img/products/{Product.Code}.jpg";
 }
