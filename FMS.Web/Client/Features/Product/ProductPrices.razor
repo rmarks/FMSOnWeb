@@ -1,0 +1,42 @@
+﻿@inject HttpClient Http
+
+@if (_dropdowns is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="form-group">
+                    <label class="font-weight-bold text-secondary">Hinnakirjad</label>
+                    <select class="form-control" @bind="@_priceListId">
+                        @foreach (var item in _dropdowns.PriceLists)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private ProductPricesDropdowns _dropdowns;
+    private int _priceListId = 1;
+    private IEnumerable<ProductPricesDto> _prices;
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //if (Id > 0)
+        //{
+        //    _productBase = await Http.GetFromJsonAsync<ProductVariantsDto>($"api/product/productvariants/{Id}");
+        //}
+
+        _dropdowns = await Http.GetFromJsonAsync<ProductPricesDropdowns>("api/product/productvariantsdropdowns");
+    }
+}
