@@ -2,7 +2,7 @@
 
 namespace FMS.Web.Shared.Features.Product
 {
-    public class ProductBasicsDto
+    public class ProductBasicsVm
     {
         public int Id { get; set; }
 

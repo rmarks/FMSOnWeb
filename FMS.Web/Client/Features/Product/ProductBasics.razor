@@ -1,5 +1,4 @@
-﻿@inject HttpClient Http
-@inject IMediator Mediator
+﻿@inject IMediator Mediator
 
 @if (_dropdowns is null)
 {
@@ -140,7 +139,7 @@ else
 }
 
 @code {
-    private ProductBasicsDto _productBase = new ProductBasicsDto();
+    private ProductBasicsVm _productBase = new ProductBasicsVm();
     private ProductFilterDropdownsVm _dropdowns;
     private string _imagePath = "img/products/BlankImage.png";
 
@@ -150,13 +149,18 @@ else
     {
         if (Id > 0)
         {
-            _productBase = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/product/productbasics/{Id}");
-            _imagePath = $"img/products/{_productBase.Code}.jpg";
+            var response = await Mediator.Send(new GetProductBasicsRequest(Id));
+
+            if (response.ProductBasicsVm is not null)
+            {
+                _productBase = response.ProductBasicsVm;
+
+                _imagePath = $"img/products/{_productBase.Code}.jpg";
+            }
         }
 
-        //_dropdowns = await Http.GetFromJsonAsync<ProductFilterDropdowns>("api/products/dropdowns");
-        var response = await Mediator.Send(new GetProductFilterDropdownsRequest());
-        _dropdowns = response.Dropdowns;
+        var response2 = await Mediator.Send(new GetProductFilterDropdownsRequest());
+        _dropdowns = response2.Dropdowns;
     }
 
     private void SubmitForm()

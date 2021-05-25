@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.Product
 {
-    public class ReadProductBasicsEndpoint : BaseAsyncEndpoint.WithRequest<int>.WithResponse<ProductBasicsDto>
+    public class GetProductBasicsEndpoint : BaseAsyncEndpoint.WithRequest<int>.WithResponse<GetProductBasicsRequest.Response>
     {
         private readonly FMSContext _context;
 
-        public ReadProductBasicsEndpoint(FMSContext context)
+        public GetProductBasicsEndpoint(FMSContext context)
         {
             _context = context;
         }
 
-        [HttpGet("api/product/productbasics/{id}")]
-        public override async Task<ActionResult<ProductBasicsDto>> HandleAsync(int id, CancellationToken cancellationToken = default)
+        [HttpGet(GetProductBasicsRequest.RouteTemplate)]
+        public override async Task<ActionResult<GetProductBasicsRequest.Response>> HandleAsync(int id, CancellationToken cancellationToken = default)
         {
-            return await _context.ProductBases
+            var productBasicsVm = await _context.ProductBases
                 .AsNoTracking()
                 .Where(p => p.Id == id)
-                .Select(p => new ProductBasicsDto
+                .Select(p => new ProductBasicsVm
                 {
                     Id = p.Id,
                     Code = p.Code,
@@ -40,6 +40,8 @@ namespace FMS.Web.Server.Features.Product
                     ProductCollectionId = p.ProductCollectionId
                 })
                 .FirstOrDefaultAsync();
+
+            return Ok(new GetProductBasicsRequest.Response(productBasicsVm));
         }
     }
 }
