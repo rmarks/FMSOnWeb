@@ -69,9 +69,9 @@ else
     {
         if (Id > 0)
         {
-            _productBase = await Http.GetFromJsonAsync<ProductVariantsDto>($"api/product/productvariants/{Id}");
+            _productBase = await Http.GetFromJsonAsync<ProductVariantsDto>($"api/productvariants/{Id}");
         }
 
-        _dropdowns = await Http.GetFromJsonAsync<ProductVariantsDropdowns>("api/product/productvariantsdropdowns");
+        _dropdowns = await Http.GetFromJsonAsync<ProductVariantsDropdowns>("api/productvariants/dropdowns");
     }
 }

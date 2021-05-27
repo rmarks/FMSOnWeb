@@ -1,4 +1,6 @@
+using FMS.Application.Features.Product.ProductBasics;
 using FMS.DAL;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +26,8 @@ namespace FMS.Web.Server
             services.AddRazorPages();
 
             services.AddDbContext<FMSContext>(options => options.UseInMemoryDatabase("FMSDb"));
+
+            services.AddMediatR(typeof(GetProductBasics).Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

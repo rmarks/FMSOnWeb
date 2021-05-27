@@ -1,30 +1,32 @@
-﻿using Ardalis.ApiEndpoints;
-using FMS.DAL;
+﻿using FMS.DAL;
 using FMS.Web.Shared.Features.Product;
-using Microsoft.AspNetCore.Mvc;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FMS.Web.Server.Features.Product
+namespace FMS.Application.Features.Product.ProductBasics
 {
-    public class GetProductBasicsEndpoint : BaseAsyncEndpoint.WithRequest<int>.WithResponse<GetProductBasicsRequest.Response>
+    public static class GetProductBasics
     {
-        private readonly FMSContext _context;
+        public record Query(int Id) : IRequest<ProductBasicsDto>;
 
-        public GetProductBasicsEndpoint(FMSContext context)
+        public class Handler : IRequestHandler<Query, ProductBasicsDto>
         {
-            _context = context;
-        }
+            private readonly FMSContext _context;
 
-        [HttpGet(GetProductBasicsRequest.RouteTemplate)]
-        public override async Task<ActionResult<GetProductBasicsRequest.Response>> HandleAsync(int id, CancellationToken cancellationToken = default)
-        {
-            var productBasicsVm = await _context.ProductBases
+            public Handler(FMSContext context)
+            {
+                _context = context;
+            }
+
+            public async Task<ProductBasicsDto> Handle(Query request, CancellationToken cancellationToken)
+            {
+                return await _context.ProductBases
                 .AsNoTracking()
-                .Where(p => p.Id == id)
-                .Select(p => new ProductBasicsVm
+                .Where(p => p.Id == request.Id)
+                .Select(p => new ProductBasicsDto
                 {
                     Id = p.Id,
                     Code = p.Code,
@@ -40,8 +42,7 @@ namespace FMS.Web.Server.Features.Product
                     ProductCollectionId = p.ProductCollectionId
                 })
                 .FirstOrDefaultAsync();
-
-            return Ok(new GetProductBasicsRequest.Response(productBasicsVm));
+            }
         }
     }
 }

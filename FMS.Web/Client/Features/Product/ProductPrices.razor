@@ -6,19 +6,45 @@
 }
 else
 {
-    <div class="container">
-        <div class="row">
-            <div class="col-3">
+    <div class="row">
+        <div class="col-3">
+            <FormSection>
                 <div class="form-group">
                     <label class="font-weight-bold text-secondary">Hinnakirjad</label>
-                    <select class="form-control" @bind="@_priceListId">
+                    <select class="form-control" value="@_priceListId" @onchange="HandlePriceListChanged">
                         @foreach (var item in _dropdowns.PriceLists)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
                     </select>
                 </div>
-            </div>
+            </FormSection>
+        </div>
+
+        <div class="col-4">
+            <EditForm Model="@_prices">
+                <FormSection>
+                    <div class="row justify-content-center">
+                        <div class="col-5">
+                            <label class="font-weight-bold text-secondary">Kood</label>
+                        </div>
+                        <div class="col-4 text-right">
+                            <label class="font-weight-bold text-secondary">Hind</label>
+                        </div>
+                    </div>
+                    @foreach (var item in _prices)
+                    {
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-5">
+                                <InputText class="form-control" @bind-Value="@item.ProductCode" />
+                            </div>
+                            <div class="col-4">
+                                <InputNumber class="form-control text-right" @bind-Value="@item.UnitPrice" />
+                            </div>
+                        </div>
+                    }
+                </FormSection>
+            </EditForm>
         </div>
     </div>
 }
@@ -26,17 +52,28 @@ else
 @code {
     private ProductPricesDropdowns _dropdowns;
     private int _priceListId = 1;
-    private IEnumerable<ProductPricesDto> _prices;
+    private IEnumerable<ProductPriceItemDto> _prices;
 
     [Parameter] public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        //if (Id > 0)
-        //{
-        //    _productBase = await Http.GetFromJsonAsync<ProductVariantsDto>($"api/product/productvariants/{Id}");
-        //}
+        if (Id > 0)
+        {
+            await UpdateList();
+        }
 
-        _dropdowns = await Http.GetFromJsonAsync<ProductPricesDropdowns>("api/product/productvariantsdropdowns");
+        _dropdowns = await Http.GetFromJsonAsync<ProductPricesDropdowns>("api/productprices/dropdowns");
+    }
+
+    private async Task UpdateList()
+    {
+        _prices = await Http.GetFromJsonAsync<IEnumerable<ProductPriceItemDto>>($"api/productprices/productbase/{Id}/pricelist/{_priceListId}");
+    }
+
+    private async Task HandlePriceListChanged(ChangeEventArgs args)
+    {
+        _priceListId = int.Parse(args.Value.ToString());
+        await UpdateList();
     }
 }

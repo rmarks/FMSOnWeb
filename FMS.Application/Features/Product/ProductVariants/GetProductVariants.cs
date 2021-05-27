@@ -1,29 +1,31 @@
-﻿using Ardalis.ApiEndpoints;
-using FMS.DAL;
+﻿using FMS.DAL;
 using FMS.Web.Shared.Features.Product;
-using Microsoft.AspNetCore.Mvc;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FMS.Web.Server.Features.Product
+namespace FMS.Application.Features.Product.ProductVariants
 {
-    public class ReadProductVariantsEndpoint : BaseAsyncEndpoint.WithRequest<int>.WithResponse<ProductVariantsDto>
+    public static class GetProductVariants
     {
-        private readonly FMSContext _context;
+        public record Query(int Id) : IRequest<ProductVariantsDto>;
 
-        public ReadProductVariantsEndpoint(FMSContext context)
+        public class Handler : IRequestHandler<Query, ProductVariantsDto>
         {
-            _context = context;
-        }
+            private readonly FMSContext _context;
 
-        [HttpGet("api/product/productvariants/{id}")]
-        public override async Task<ActionResult<ProductVariantsDto>> HandleAsync(int id, CancellationToken cancellationToken = default)
-        {
-            return await _context.ProductBases
+            public Handler(FMSContext context)
+            {
+                _context = context;
+            }
+
+            public async Task<ProductVariantsDto> Handle(Query request, CancellationToken cancellationToken)
+            {
+                return await _context.ProductBases
                 .AsNoTracking()
-                .Where(pb => pb.Id == id)
+                .Where(pb => pb.Id == request.Id)
                 .Select(pb => new ProductVariantsDto
                 {
                     Id = pb.Id,
@@ -40,6 +42,7 @@ namespace FMS.Web.Server.Features.Product
                         .ToList()
                 })
                 .FirstOrDefaultAsync();
+            }
         }
     }
 }
