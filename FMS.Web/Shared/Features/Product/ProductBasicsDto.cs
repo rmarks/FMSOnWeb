@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FluentValidation;
+using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Web.Shared.Features.Product
 {
@@ -48,5 +49,20 @@ namespace FMS.Web.Shared.Features.Product
             }
         }
         public int? ProductCollectionId { get; set; }
+    }
+
+    public class ProductBasicsValidator : AbstractValidator<ProductBasicsDto>
+    {
+        public ProductBasicsValidator()
+        {
+            RuleFor(_ => _.Code).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.Name).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.ProductStatusId).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.ProductSourceTypeId).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.ProductDestinationTypeId).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.ProductMaterialId).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.ProductTypeId).NotEmpty().WithMessage("Kohustuslik väli");
+            RuleFor(_ => _.ProductGroupId).NotEmpty().WithMessage("Kohustuslik väli");
+        }
     }
 }

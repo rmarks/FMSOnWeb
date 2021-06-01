@@ -7,6 +7,7 @@
 else
 {
     <EditForm Model="@_productBase" OnValidSubmit="SubmitForm">
+        <FluentValidationValidator />
         <div class="row mb-3">
             <div class="col-auto">
                 <div class="card" style="width: 268px;">
@@ -19,10 +20,12 @@ else
                     <FormFieldSet Width="col-2">
                         <label class="font-weight-bold text-secondary">Kood</label>
                         <InputText class="form-control" @bind-Value="@_productBase.Code" />
+                        <ValidationMessage For="@(() => _productBase.Code)" />
                     </FormFieldSet>
                     <FormFieldSet Width="col-4">
                         <label class="font-weight-bold text-secondary">Nimi</label>
                         <InputText class="form-control" @bind-Value="@_productBase.Name" />
+                        <ValidationMessage For="@(() => _productBase.Name)" />
                     </FormFieldSet>
                 </FormSection>
             </div>
@@ -40,6 +43,7 @@ else
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
+                        <ValidationMessage For="@(() => _productBase.ProductStatusId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Lähtetüüp</label>
@@ -50,6 +54,7 @@ else
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
+                        <ValidationMessage For="@(() => _productBase.ProductSourceTypeId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Sihttüüp</label>
@@ -60,6 +65,7 @@ else
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
+                        <ValidationMessage For="@(() => _productBase.ProductDestinationTypeId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Materjal</label>
@@ -70,6 +76,7 @@ else
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
+                        <ValidationMessage For="@(() => _productBase.ProductMaterialId)" />
                     </FormFieldSet>
                 </FormSection>
             </div>
@@ -81,10 +88,11 @@ else
                         <InputSelect class="form-control" @bind-Value="@_productBase.ProductTypeId">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductTypes)
-                                {
+                            {
                                 <option value="@item.Id">@item.Name</option>
-                                }
+                            }
                         </InputSelect>
+                        <ValidationMessage For="@(() => _productBase.ProductTypeId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Grupp</label>
@@ -95,6 +103,7 @@ else
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
+                        <ValidationMessage For="@(() => _productBase.ProductGroupId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Kaubamärk</label>
@@ -140,6 +149,7 @@ else
 
 @code {
     private ProductBasicsDto _productBase = new ProductBasicsDto();
+    //private EditContext _editContext;
     private ProductBasicsDropdowns _dropdowns;
     private string _imagePath = "img/products/BlankImage.png";
 
@@ -147,6 +157,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        //_editContext = new EditContext(_productBase);
+        //_editContext.OnFieldChanged += (sender, e) => _editContext.Validate();
+
         if (Id > 0)
         {
             _productBase = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}");
