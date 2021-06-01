@@ -1,11 +1,11 @@
-﻿<div class="card" style="width: 12.5rem;">
+﻿<div class="card" style="width: 12.5rem; cursor: pointer;" @onclick="@(async () => await OnSelected.InvokeAsync(Item))">
     <img class="card-img" src="@ImagePath">
     <div class="card-img-overlay p-1 d-flex flex-column justify-content-between">
         <h6 class="m-0 text-muted">@Item.ProductBaseName</h6>
         <div class="d-flex justify-content-between align-items-end">
             <h5 class="m-0">@Item.ProductBaseCode</h5>
-            <button class="btn btn-sm text-white" style="background-color: @ButtonColor;"
-                    @onclick="@(async () => await OnSelected.InvokeAsync(Item))">
+            <button class="btn btn-sm text-white" style="background-color: @ButtonColor;">
+                    @*@onclick="@(async () => await OnSelected.InvokeAsync(Item))">*@
                 Laos: @Item.FreeQuantity
             </button>
         </div>
