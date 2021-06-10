@@ -1,3 +1,4 @@
+using FMS.Application;
 using FMS.Application.Features.Product.ProductBasics;
 using FMS.DAL;
 using MediatR;
@@ -28,6 +29,7 @@ namespace FMS.Web.Server
             services.AddDbContext<FMSContext>(options => options.UseInMemoryDatabase("FMSDb"));
 
             services.AddMediatR(typeof(GetProductBasics).Assembly);
+            services.AddAutoMapper(typeof(FMSApplication).Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

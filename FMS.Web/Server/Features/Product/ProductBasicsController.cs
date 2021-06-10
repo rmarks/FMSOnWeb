@@ -1,4 +1,5 @@
 ﻿using FMS.Application.Features.Product.ProductBasics;
+using FMS.Web.Shared.Features.Product;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -34,14 +35,25 @@ namespace FMS.Web.Server.Features.Product
 
         // POST api/<ProductBasicsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] ProductBasicsDto dto)
         {
+            var newDto = await _mediator.Send(new AddProductBasics.Command(dto));
+
+            return CreatedAtAction(nameof(Get), new { id = newDto.Id }, newDto);
         }
 
         // PUT api/<ProductBasicsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] ProductBasicsDto dto)
         {
+            if (id != dto.Id)
+            {
+                return BadRequest();
+            }
+
+            await _mediator.Send(new UpdateProductBasics.Command(dto));
+            
+            return NoContent();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FMS.Web.Shared.Features.LocationList;
+using FMS.Web.Shared.Features.ProductList;
 
 namespace FMS.Web.Client.Features.Shared
 {
@@ -15,6 +16,19 @@ namespace FMS.Web.Client.Features.Shared
                 return temp;
             }
             set => _locationListOptions = value; 
+        }
+
+        private ProductFilterOptionsVm _productFilterOptions;
+        public ProductFilterOptionsVm ProductFilterOptions 
+        {
+            get
+            {
+                var temp = _productFilterOptions;
+                _productFilterOptions = null;
+
+                return temp;
+            }
+            set => _productFilterOptions = value; 
         }
     }
 }

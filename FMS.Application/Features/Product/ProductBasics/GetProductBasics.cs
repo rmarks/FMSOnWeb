@@ -1,4 +1,5 @@
-﻿using FMS.DAL;
+﻿using AutoMapper;
+using FMS.DAL;
 using FMS.Web.Shared.Features.Product;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,33 +16,19 @@ namespace FMS.Application.Features.Product.ProductBasics
         public class Handler : IRequestHandler<Query, ProductBasicsDto>
         {
             private readonly FMSContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(FMSContext context)
+            public Handler(FMSContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
 
             public async Task<ProductBasicsDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.ProductBases
-                .AsNoTracking()
-                .Where(p => p.Id == request.Id)
-                .Select(p => new ProductBasicsDto
-                {
-                    Id = p.Id,
-                    Code = p.Code,
-                    Name = p.Name,
-                    Comments = p.Comments,
-                    ProductStatusId = p.ProductStatusId,
-                    ProductSourceTypeId = p.ProductSourceTypeId,
-                    ProductDestinationTypeId = p.ProductDestinationTypeId,
-                    ProductMaterialId = p.ProductMaterialId,
-                    ProductTypeId = p.ProductTypeId,
-                    ProductGroupId = p.ProductGroupId,
-                    ProductBrandId = p.ProductBrandId,
-                    ProductCollectionId = p.ProductCollectionId
-                })
-                .FirstOrDefaultAsync();
+                return await _mapper
+                    .ProjectTo<ProductBasicsDto>(_context.ProductBases.AsNoTracking().Where(p => p.Id == request.Id))
+                    .FirstOrDefaultAsync();
             }
         }
     }

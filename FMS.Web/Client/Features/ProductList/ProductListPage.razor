@@ -1,13 +1,15 @@
 ﻿@page "/products"
+@page "/products/return"
 @inject NavigationManager NavManager
 @inject IMediator Mediator
+@inject AppStateManager AppState
 
 <nav class="navbar navbar-dark bg-secondary rounded-top zindex-like-filter-drawer">
     <span class="navbar-brand">Tooted</span>
 </nav>
 
 <ProductFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))">
-    <a class="btn btn-primary disabled" href="products/add">Lisa toode</a>
+    <button class="btn btn-primary" @onclick="AddProduct">Lisa uus toode</button>
 </ProductFilter>
 
 @if (_pagedProducts == null)
@@ -34,6 +36,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        if (NavManager.Uri.ToLower().Contains("return"))
+        {
+            _options = AppState.ProductFilterOptions ?? _options;
+        }
+
         await UpdateList();
     }
 
@@ -66,6 +73,13 @@ else
 
     private void HandleProductSelected(int productBaseId)
     {
+        AppState.ProductFilterOptions = _options;
         NavManager.NavigateTo($"products/edit/{productBaseId}");
+    }
+
+    private void AddProduct()
+    {
+        AppState.ProductFilterOptions = _options;
+        NavManager.NavigateTo("products/add");
     }
 }

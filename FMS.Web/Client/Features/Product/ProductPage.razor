@@ -1,21 +1,28 @@
 ﻿@page "/products/add"
 @page "/products/edit/{Id:int}"
 @inject HttpClient Http
+@inject NavigationManager NavManager
 
 <nav class="navbar navbar-dark bg-secondary rounded mb-3">
-    <span class="navbar-brand">Toode</span>
+    <span class="navbar-brand">Toode (id: @Id)</span>
+    <NavLink class="btn btn-primary" href="products/return">Tagasi</NavLink>
 </nav>
 
 <TabSet>
     <Tab Title="Baasinfo">
-        <ProductBasics Id="@Id" />
+        <ProductBasics @bind-Id="@Id" OnAddingCancelled="@(() => NavManager.NavigateTo("products/return"))" />
     </Tab>
-    <Tab Title="Tooteinfo">
-        <ProductVariants Id="@Id" />
-    </Tab>
-    <Tab Title="Hinnad">
-        <ProductPrices Id="@Id" />
-    </Tab>
+    
+    @if (Id > 0)
+    {
+        <Tab Title="Tooteinfo">
+            <ProductVariants Id="@Id" />
+        </Tab>
+        <Tab Title="Hinnad">
+            <ProductPrices Id="@Id" />
+        </Tab>
+    }
+
 </TabSet>
 
 

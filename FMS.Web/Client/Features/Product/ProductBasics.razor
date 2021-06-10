@@ -1,4 +1,5 @@
 ﻿@inject HttpClient Http
+@inject IMapper Mapper
 
 @if (_dropdowns is null)
 {
@@ -6,8 +7,9 @@
 }
 else
 {
-    <EditForm Model="@_productBase" OnValidSubmit="SubmitForm">
+    <EditForm EditContext="@_editContext" OnValidSubmit="SaveForm">
         <FluentValidationValidator />
+
         <div class="row mb-3">
             <div class="col-auto">
                 <div class="card" style="width: 268px;">
@@ -19,13 +21,13 @@ else
                 <FormSection>
                     <FormFieldSet Width="col-2">
                         <label class="font-weight-bold text-secondary">Kood</label>
-                        <InputText class="form-control" @bind-Value="@_productBase.Code" />
-                        <ValidationMessage For="@(() => _productBase.Code)" />
+                        <InputText class="form-control" @bind-Value="@_editModel.Code" disabled="@IsInViewMode" />
+                        <ValidationMessage For="@(() => _editModel.Code)" />
                     </FormFieldSet>
                     <FormFieldSet Width="col-4">
                         <label class="font-weight-bold text-secondary">Nimi</label>
-                        <InputText class="form-control" @bind-Value="@_productBase.Name" />
-                        <ValidationMessage For="@(() => _productBase.Name)" />
+                        <InputText class="form-control" @bind-Value="@_editModel.Name" disabled="@IsInViewMode" />
+                        <ValidationMessage For="@(() => _editModel.Name)" />
                     </FormFieldSet>
                 </FormSection>
             </div>
@@ -36,47 +38,47 @@ else
                 <FormSection>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Olek</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductStatusId">
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductStatusId" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductStatuses)
                                 {
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
-                        <ValidationMessage For="@(() => _productBase.ProductStatusId)" />
+                        <ValidationMessage For="@(() => _editModel.ProductStatusId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Lähtetüüp</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductSourceTypeId">
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductSourceTypeId" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductSourceTypes)
                                 {
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
-                        <ValidationMessage For="@(() => _productBase.ProductSourceTypeId)" />
+                        <ValidationMessage For="@(() => _editModel.ProductSourceTypeId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Sihttüüp</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductDestinationTypeId">
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductDestinationTypeId" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductDestinationTypes)
                                 {
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
-                        <ValidationMessage For="@(() => _productBase.ProductDestinationTypeId)" />
+                        <ValidationMessage For="@(() => _editModel.ProductDestinationTypeId)" />
                     </FormFieldSet>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Materjal</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductMaterialId">
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductMaterialId" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductMaterials)
                                 {
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
-                        <ValidationMessage For="@(() => _productBase.ProductMaterialId)" />
+                        <ValidationMessage For="@(() => _editModel.ProductMaterialId)" />
                     </FormFieldSet>
                 </FormSection>
             </div>
@@ -85,41 +87,46 @@ else
                 <FormSection>
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Tüüp</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductTypeId">
+                        <InputSelect class="form-control" Value="@_editModel.ProductTypeId" ValueChanged="@((p) => HandleProductTypeChanged(p))"
+                                     ValueExpression="@(() => _editModel.ProductTypeId)" TValue="int?" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductTypes)
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }
                         </InputSelect>
-                        <ValidationMessage For="@(() => _productBase.ProductTypeId)" />
+                        <ValidationMessage For="@(() => _editModel.ProductTypeId)" />
                     </FormFieldSet>
+
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Grupp</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductGroupId">
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductGroupId" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
-                            @foreach (var item in _dropdowns.GetFilteredProductGroups(_productBase.ProductTypeId))
+                            @foreach (var item in GetFilteredProductGroups(_editModel.ProductTypeId))
                                 {
                                 <option value="@item.Id">@item.Name</option>
                                 }
                         </InputSelect>
-                        <ValidationMessage For="@(() => _productBase.ProductGroupId)" />
+                        <ValidationMessage For="@(() => _editModel.ProductGroupId)" />
                     </FormFieldSet>
+
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Kaubamärk</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductBrandId">
+                        <InputSelect class="form-control" Value="@_editModel.ProductBrandId" ValueChanged="@((p) => HandleProductBrandChanged(p))"
+                                     TValue="int?" ValueExpression="@(() => _editModel.ProductBrandId)" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
                             @foreach (var item in _dropdowns.ProductBrands)
-                                {
+                            {
                                 <option value="@item.Id">@item.Name</option>
-                                }
+                            }
                         </InputSelect>
                     </FormFieldSet>
+
                     <FormFieldSet>
                         <label class="font-weight-bold text-secondary">Kollektsioon</label>
-                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductCollectionId">
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductCollectionId" disabled="@IsInViewMode">
                             <option value="">-- Vali ---</option>
-                            @foreach (var item in _dropdowns.GetFilteredProductCollections(_productBase.ProductBrandId))
+                            @foreach (var item in GetFilteredProductCollections(_editModel.ProductBrandId))
                                 {
                                 <option value="@item.Id">@item.Name</option>
                                 }
@@ -131,7 +138,7 @@ else
             <div class="col">
                 <FormSection>
                     <label class="font-weight-bold text-secondary">Kommentaarid</label>
-                    <InputTextArea class="form-control" @bind-Value="@_productBase.Comments" rows="12" />
+                    <InputTextArea class="form-control" @bind-Value="@_editModel.Comments" rows="12" disabled="@IsInViewMode" />
                 </FormSection>
             </div>
         </div>
@@ -139,8 +146,9 @@ else
         <div class="mt-4 pt-2 border-top">
             <div class="row">
                 <div class="offset-4 col-8 text-right">
-                    <button class="btn btn-outline-secondary" type="button" disabled>Loobu</button>
-                    <button class="btn btn-primary" type="submit" disabled>Salvesta</button>
+                    <button class="btn btn-info" type="button" @onclick="@(() => _isInEditMode = true)" hidden="@_isInEditMode">Muuda</button>
+                    <button class="btn btn-secondary" type="button" @onclick="CancelForm" hidden="@IsInViewMode">Loobu</button>
+                    <button class="btn btn-warning" type="submit" hidden="@IsInViewMode">Salvesta</button>
                 </div>
             </div>
         </div>
@@ -148,29 +156,119 @@ else
 }
 
 @code {
-    private ProductBasicsDto _productBase = new ProductBasicsDto();
-    //private EditContext _editContext;
+    private ProductBasicsDto _initialModel;
+    private ProductBasicsDto _editModel;
+    private EditContext _editContext;
     private ProductBasicsDropdowns _dropdowns;
     private string _imagePath = "img/products/BlankImage.png";
+    private bool _isInEditMode = false;
 
     [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback<int> IdChanged { get; set; }
+    [Parameter] public EventCallback OnAddingCancelled { get; set; }
+
+    private bool IsInViewMode => !_isInEditMode;
 
     protected override async Task OnInitializedAsync()
     {
-        //_editContext = new EditContext(_productBase);
-        //_editContext.OnFieldChanged += (sender, e) => _editContext.Validate();
-
         if (Id > 0)
         {
-            _productBase = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}");
-            _imagePath = $"img/products/{_productBase.Code}.jpg";
+            _initialModel = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}");
+            ResetEditForm(_initialModel);
+            _imagePath = $"img/products/{_editModel.Code}.jpg";
+        }
+        else
+        {
+            ResetEditForm(new ProductBasicsDto());
+            _isInEditMode = true;
         }
 
         _dropdowns = await Http.GetFromJsonAsync<ProductBasicsDropdowns>("api/productbasics/dropdowns");
     }
 
-    private void SubmitForm()
+    #region event handlers
+    private void CancelForm()
     {
-
+        if (Id == 0)
+        {
+            OnAddingCancelled.InvokeAsync();
+        }
+        else
+        {
+            _isInEditMode = false;
+            ResetEditForm(_initialModel);
+        }
     }
+
+    private async Task SaveForm()
+    {
+        if (Id == 0)
+        {
+            var response = await Http.PostAsJsonAsync<ProductBasicsDto>("api/productbasics", _editModel);
+            if (response.IsSuccessStatusCode)
+            {
+                var dto = await response.Content.ReadFromJsonAsync<ProductBasicsDto>();
+                ResetEditForm(dto);
+                
+                await IdChanged.InvokeAsync(dto.Id);
+            }
+        }
+        else
+        {
+            var response = await Http.PutAsJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}", _editModel);
+            if (response.IsSuccessStatusCode)
+            {
+                ResetEditForm(_editModel);
+            }
+        }
+
+        _isInEditMode = false;
+    }
+
+    private void HandleProductTypeChanged(int? id)
+    {
+        _editModel.ProductTypeId = id;
+        _editModel.ProductGroupId = default;
+
+        _editContext.NotifyFieldChanged(_editContext.Field(nameof(_editModel.ProductGroupId)));
+    }
+
+    private void HandleProductBrandChanged(int? id)
+    {
+        _editModel.ProductBrandId = id;
+        _editModel.ProductCollectionId = default;
+
+        _editContext.NotifyFieldChanged(_editContext.Field(nameof(_editModel.ProductCollectionId)));
+    }
+    #endregion
+
+    #region helpers
+    private void ResetEditForm(ProductBasicsDto sourceModel)
+    {
+        if (sourceModel is null) return;
+
+        _editModel = Mapper.Map<ProductBasicsDto>(sourceModel);
+        _editContext = new EditContext(_editModel);
+    }
+
+    private IEnumerable<ChildDropdownDto> GetFilteredProductGroups(int? productTypeId)
+    {
+        if (productTypeId > 0)
+        {
+            return _dropdowns.ProductGroups.Where(p => p.ParentId == productTypeId).ToList();
+        }
+
+        return Enumerable.Empty<ChildDropdownDto>();
+    }
+
+    private IEnumerable<ChildDropdownDto> GetFilteredProductCollections(int? productBrandId)
+    {
+        if (productBrandId > 0)
+        {
+            return _dropdowns.ProductCollections.Where(p => p.ParentId == productBrandId).ToList();
+        }
+
+        return Enumerable.Empty<ChildDropdownDto>();
+    }
+    #endregion
 }
