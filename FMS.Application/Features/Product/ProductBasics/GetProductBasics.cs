@@ -1,19 +1,12 @@
-﻿using AutoMapper;
-using FMS.DAL;
-using FMS.Web.Shared.Features.Product;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FMS.Web.Shared.Features.Product;
 
 namespace FMS.Application.Features.Product.ProductBasics
 {
     public static class GetProductBasics
     {
-        public record Query(int Id) : IRequest<ProductBasicsDto>;
+        public record Query(int Id) : IRequest<ProductBasicsDto?>;
 
-        public class Handler : IRequestHandler<Query, ProductBasicsDto>
+        public class Handler : IRequestHandler<Query, ProductBasicsDto?>
         {
             private readonly FMSContext _context;
             private readonly IMapper _mapper;
@@ -24,7 +17,7 @@ namespace FMS.Application.Features.Product.ProductBasics
                 _mapper = mapper;
             }
 
-            public async Task<ProductBasicsDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ProductBasicsDto?> Handle(Query request, CancellationToken cancellationToken)
             {
                 return await _mapper
                     .ProjectTo<ProductBasicsDto>(_context.ProductBases.AsNoTracking().Where(p => p.Id == request.Id))

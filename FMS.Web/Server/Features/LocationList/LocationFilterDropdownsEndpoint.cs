@@ -3,10 +3,6 @@ using FMS.DAL;
 using FMS.Web.Shared.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.LocationList
 {

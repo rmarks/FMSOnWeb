@@ -4,9 +4,6 @@ using FMS.Web.Shared.Features.ProductList;
 using FMS.Web.Shared.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.ProductList
 {

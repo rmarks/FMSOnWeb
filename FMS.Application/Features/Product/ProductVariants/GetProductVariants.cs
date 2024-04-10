@@ -1,18 +1,12 @@
-﻿using FMS.DAL;
-using FMS.Web.Shared.Features.Product;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FMS.Web.Shared.Features.Product;
 
 namespace FMS.Application.Features.Product.ProductVariants
 {
     public static class GetProductVariants
     {
-        public record Query(int Id) : IRequest<ProductVariantsDto>;
+        public record Query(int Id) : IRequest<ProductVariantsDto?>;
 
-        public class Handler : IRequestHandler<Query, ProductVariantsDto>
+        public class Handler : IRequestHandler<Query, ProductVariantsDto?>
         {
             private readonly FMSContext _context;
 
@@ -21,7 +15,7 @@ namespace FMS.Application.Features.Product.ProductVariants
                 _context = context;
             }
 
-            public async Task<ProductVariantsDto> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ProductVariantsDto?> Handle(Query request, CancellationToken cancellationToken)
             {
                 return await _context.ProductBases
                 .AsNoTracking()

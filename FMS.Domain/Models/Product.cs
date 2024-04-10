@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Domain.Models
 {
@@ -8,17 +7,17 @@ namespace FMS.Domain.Models
         public int Id { get; set; }
         
         [Required, MaxLength(15)]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         public int ProductBaseId { get; set; }
-        public ProductBase ProductBase { get; set; }
+        public ProductBase ProductBase { get; set; } = default!;
 
         public int? ProductVariantId { get; set; }
-        public ProductVariant ProductVariant { get; set; }
+        public ProductVariant ProductVariant { get; set; } = default!;
 
-        public IList<Inventory> Inventory { get; set; }
+        public ICollection<Inventory> Inventory { get; set; } = default!;
     }
 }

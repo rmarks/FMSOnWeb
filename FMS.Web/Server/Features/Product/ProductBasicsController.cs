@@ -2,7 +2,6 @@
 using FMS.Web.Shared.Features.Product;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.Product
 {

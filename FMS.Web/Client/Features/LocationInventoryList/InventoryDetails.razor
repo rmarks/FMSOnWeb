@@ -73,7 +73,8 @@
 
     [Parameter] public LocationInventoryListDto Item { get; set; }
 
-    private string ItemImage => Item == null ? null : $"img/products/{Item.ProductBaseCode}.jpg";
+    // private string ItemImage => Item == null ? null : $"img/products/{Item.ProductBaseCode}.jpg";
+    private string ItemImage => Item == null ? null : $"https://fmsimagesapi.azurewebsites.net/api/{Item.ProductBaseCode}";
 
     protected override async Task OnParametersSetAsync()
     {

@@ -1,8 +1,4 @@
-﻿using FMS.DAL;
-using FMS.Web.Shared.Features.Product;
-using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FMS.Web.Shared.Features.Product;
 
 namespace FMS.Application.Features.Product.ProductBasics
 {
@@ -22,6 +18,7 @@ namespace FMS.Application.Features.Product.ProductBasics
             public async Task<bool> Handle(Command request, CancellationToken cancellationToken)
             {
                 var productBase = await _context.ProductBases.FindAsync(request.ProductBasicsDto.Id);
+                if (productBase is null) return false;
 
                 _context.Entry(productBase).CurrentValues.SetValues(request.ProductBasicsDto);
 

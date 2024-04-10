@@ -4,9 +4,6 @@ using FMS.Web.Server.Extensions;
 using FMS.Web.Shared.Features.LocationInventoryList;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.LocationInventoryList
 {
@@ -28,8 +25,8 @@ namespace FMS.Web.Server.Features.LocationInventoryList
             {
                 locationName = (await _context.Locations
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(l => l.Id == request.LocationId))
-                    .Name;
+                    .FirstOrDefaultAsync(l => l.Id == request.LocationId))?
+                    .Name ?? "";
             }
 
             var query = _context.Inventory

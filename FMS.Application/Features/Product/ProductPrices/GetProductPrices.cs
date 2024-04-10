@@ -1,12 +1,6 @@
 ﻿using FMS.DAL;
 using FMS.Web.Shared.Features.Product;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace FMS.Application.Features.Product.ProductPrices
 {
     public static class GetProductPrices

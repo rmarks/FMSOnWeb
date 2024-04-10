@@ -1,10 +1,5 @@
-﻿using AutoMapper;
-using FMS.DAL;
-using FMS.Domain.Models;
+﻿using FMS.Domain.Models;
 using FMS.Web.Shared.Features.Product;
-using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Application.Features.Product.ProductBasics
 {

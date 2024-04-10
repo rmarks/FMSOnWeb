@@ -10,5 +10,6 @@
     [Parameter] public ProductLisItemVm Product { get; set; }
     [Parameter] public EventCallback<ProductLisItemVm> OnSelected { get; set; }
 
-    private string ImagePath => $"img/products/{Product.Code}.jpg";
+    // private string ImagePath => $"img/products/{Product.Code}.jpg";
+    private string ImagePath => $"https://fmsimagesapi.azurewebsites.net/api/{Product.Code}";
 }

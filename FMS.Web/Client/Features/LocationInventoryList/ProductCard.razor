@@ -20,6 +20,7 @@
     [Parameter]
     public EventCallback<LocationInventoryListDto> OnSelected { get; set; }
 
-    private string ImagePath => $"img/products/{Item.ProductBaseCode}.jpg";
+    // private string ImagePath => $"img/products/{Item.ProductBaseCode}.jpg";
+    private string ImagePath => $"https://fmsimagesapi.azurewebsites.net/api/{Item.ProductBaseCode}";
     private string ButtonColor => Item.FreeQuantity > 0 ? "mediumseagreen" : (Item.ReservedQuantity > 0 ? "orange" : "firebrick");
 }

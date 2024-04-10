@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FMS.Domain.Models
 {
@@ -8,14 +7,14 @@ namespace FMS.Domain.Models
         public int Id { get; set; }
 
         [Required, MaxLength(10)]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
 
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         public int LocationTypeId { get; set; }
-        public LocationType LocationType { get; set; }
+        public LocationType LocationType { get; set; } = default!;
 
-        public IList<Inventory> Inventory { get; set; }
+        public ICollection<Inventory> Inventory { get; set; } = default!;
     }
 }

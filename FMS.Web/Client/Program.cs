@@ -1,31 +1,21 @@
+using FMS.Web.Client;
 using FMS.Web.Client.Features.Shared;
-using FMS.Web.Shared;
-using MediatR;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
-namespace FMS.Web.Client
-{
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("#app");
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddSingleton<AppStateManager>();
-            builder.Services.AddMediatR(typeof(Program).Assembly);
-            builder.Services.AddAutoMapper(typeof(FMSShared).Assembly);
+builder.Services.AddHttpClient("FMS.Web.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
-            await builder.Build().RunAsync();
-        }
-    }
-}
+// Supply HttpClient instances that include access tokens when making requests to the server project
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FMS.Web.ServerAPI"));
+
+builder.Services.AddMediatR(conf => conf.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Services.AddSingleton<AppStateManager>();
+
+await builder.Build().RunAsync();

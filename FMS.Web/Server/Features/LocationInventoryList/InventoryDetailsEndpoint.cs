@@ -3,9 +3,6 @@ using FMS.DAL;
 using FMS.Web.Shared.Features.LocationInventoryList;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Web.Server.Features.LocationInventoryList
 {

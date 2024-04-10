@@ -1,11 +1,5 @@
-﻿using FMS.DAL;
-using FMS.Web.Shared.Features.Product;
+﻿using FMS.Web.Shared.Features.Product;
 using FMS.Web.Shared.Features.Shared;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Application.Features.Product.ProductVariants
 {

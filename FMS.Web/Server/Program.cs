@@ -1,30 +1,31 @@
-﻿using FMS.DAL;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using FMS.Application;
+using FMS.DAL;
 
-namespace FMS.Web.Server
+var builder = WebApplication.CreateBuilder();
+
+builder.Services.AddControllers();
+
+builder.Services.AddApplication();
+
+var app  = builder.Build();
+
+if (app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
-            
-            using (var scope = host.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<FMSContext>();
-                SeedData.Initialize(context);
-            }
-
-            host.Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+    app.UseWebAssemblyDebugging();
 }
+
+app.UseHttpsRedirection();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.MapControllers();
+app.MapFallbackToFile("index.html");
+
+using (var scope = app.Services.CreateScope())
+{
+    SeedData.Initialize(scope.ServiceProvider.GetRequiredService<FMSContext>());
+}
+
+app.Run();

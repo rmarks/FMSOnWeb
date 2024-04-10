@@ -159,8 +159,9 @@ else
     private ProductBasicsDto _initialModel;
     private ProductBasicsDto _editModel;
     private EditContext _editContext;
-    private ProductBasicsDropdowns _dropdowns;
-    private string _imagePath = "img/products/BlankImage.png";
+    private ProductBasicsDropdowns? _dropdowns;
+    // private string _imagePath = "img/products/BlankImage.png";
+    private string _imagePath = "https://fmsimagesapi.azurewebsites.net/api/BlankImage";
     private bool _isInEditMode = false;
 
     [Parameter] public int Id { get; set; }
@@ -175,7 +176,8 @@ else
         {
             _initialModel = await Http.GetFromJsonAsync<ProductBasicsDto>($"api/productbasics/{Id}");
             ResetEditForm(_initialModel);
-            _imagePath = $"img/products/{_editModel.Code}.jpg";
+            // _imagePath = $"img/products/{_editModel.Code}.jpg";
+            _imagePath = $"https://fmsimagesapi.azurewebsites.net/api/{_editModel.Code}";
         }
         else
         {

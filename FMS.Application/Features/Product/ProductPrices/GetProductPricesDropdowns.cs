@@ -1,14 +1,5 @@
-﻿using FMS.DAL;
-using FMS.Web.Shared.Features.Product;
+﻿using FMS.Web.Shared.Features.Product;
 using FMS.Web.Shared.Features.Shared;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Application.Features.Product.ProductPrices
 {
