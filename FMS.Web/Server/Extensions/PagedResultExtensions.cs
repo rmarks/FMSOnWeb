@@ -21,7 +21,7 @@ namespace FMS.Web.Server.Extensions
             result.PageCount = (int)Math.Ceiling(pageCount);
 
             var skip = (page - 1) * pageSize;
-            result.Results = query.Skip(skip).Take(pageSize).ToList();
+            result.List = query.Skip(skip).Take(pageSize).ToList();
 
             return result;
         }
@@ -39,7 +39,7 @@ namespace FMS.Web.Server.Extensions
             result.PageCount = (int)Math.Ceiling(pageCount);
 
             var skip = (page - 1) * pageSize;
-            result.Results = await query.Skip(skip).Take(pageSize).ToListAsync();
+            result.List = await query.Skip(skip).Take(pageSize).ToListAsync();
 
             return result;
         }

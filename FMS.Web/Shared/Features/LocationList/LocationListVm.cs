@@ -1,6 +1,6 @@
 ﻿namespace FMS.Web.Shared.Features.LocationList
 {
-    public class LocationListDto
+    public class LocationListVm
     {
         public int LocationId { get; set; }
 
@@ -10,7 +10,7 @@
         public string LocationName { get; set; }
         
         public int TotalCount { get; set; }
-        
+
         public int TotalStockQuantity { get; set; }
         public int TotalReservedQuantity { get; set; }
         public int TotalFreeQuantity => TotalStockQuantity - TotalReservedQuantity;

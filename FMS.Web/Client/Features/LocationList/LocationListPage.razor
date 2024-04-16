@@ -9,9 +9,9 @@
         <span class="navbar-brand">Laod</span>
     </nav>
 
-    <LocationFilter Options="@_options" OnOptionsChanged="@(() => HandleOptionsChanged())" />
+    <LocationFilter Filter="@_filter" OnFilterChanged="@(() => HandleFilterChanged())" />
 
-    @if (_pagedLocations == null)
+    @if (_pagedLocations is null)
     {
         <p>Loading...</p>
     }
@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var location in _pagedLocations.Results)
+                @foreach (var location in _pagedLocations.List)
                 {
                     <tr>
                         <td style="width: 15%;">@location.LocationCode</td>
@@ -54,20 +54,20 @@
         </table>
 
         <div class="d-flex justify-content-center">
-            <Pager Result="@_pagedLocations" OnPageChanged="@((p) => HandleOptionsChanged(p))" />
+            <Pager Result="@_pagedLocations" OnPageChanged="@((p) => HandleFilterChanged(p))" />
         </div>
     }
 </div>
 
 @code {
-    private PagedResult<LocationListDto> _pagedLocations;
-    private LocationFilterOptions _options = new LocationFilterOptions { CurrentPage = 1, PageSize = 10 };
+    private PagedResult<LocationListVm>? _pagedLocations;
+    private LocationFilterVm _filter = new LocationFilterVm { CurrentPage = 1, PageSize = 10 };
 
     protected override async Task OnInitializedAsync()
     {
         if (NavManager.Uri.ToLower().Contains("return"))
         {
-            _options = AppState.LocationListOptions ?? _options;
+            _filter = AppState.LocationListFilter ?? _filter;
         }
 
         await UpdateList();
@@ -76,11 +76,13 @@
     #region helpers
     private async Task UpdateList()
     {
-        var response = await Http.PostAsJsonAsync<LocationListRequest>("api/locations", new LocationListRequest(_options));
-        if (response.IsSuccessStatusCode)
+        var httpResponse = await Http.PostAsJsonAsync<GetLocationListRequest>("api/locations", new GetLocationListRequest(_filter));
+        if (httpResponse.IsSuccessStatusCode)
         {
-            var dto = await response.Content.ReadFromJsonAsync <LocationListRequest.Response>();
-            _pagedLocations = dto.PagedLocations;
+            var response = await httpResponse.Content.ReadFromJsonAsync <GetLocationListRequest.Response>();
+            if (response is null) throw new Exception("LocationListRequest.Response is null");
+            
+            _pagedLocations = response.PagedLocations;
         }
     }
 
@@ -88,15 +90,15 @@
     #endregion
 
     #region event handlers
-    private async Task HandleOptionsChanged(int pageNo = 1)
+    private async Task HandleFilterChanged(int pageNo = 1)
     {
-        _options.CurrentPage = pageNo;
+        _filter.CurrentPage = pageNo;
         await UpdateList();
     }
 
     private void HandleInventorySelected(int locationId)
     {
-        AppState.LocationListOptions = _options;
+        AppState.LocationListFilter = _filter;
         NavManager.NavigateTo($"locations/{locationId}/inventory");
     }
     #endregion

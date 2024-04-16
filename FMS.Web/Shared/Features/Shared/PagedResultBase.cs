@@ -1,10 +1,9 @@
-﻿namespace FMS.Web.Shared.Features.Shared
+﻿namespace FMS.Web.Shared.Features.Shared;
+
+public abstract class PagedResultBase
 {
-    public abstract class PagedResultBase
-    {
-        public int CurrentPage { get; set; }
-        public int PageCount { get; set; }
-        public int PageSize { get; set; }
-        public int ItemCount { get; set; }
-    }
+    public int CurrentPage { get; set; }
+    public int PageCount { get; set; }
+    public int PageSize { get; set; }
+    public int ItemCount { get; set; }
 }

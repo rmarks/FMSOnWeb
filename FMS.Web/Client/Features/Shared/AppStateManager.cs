@@ -5,21 +5,21 @@ namespace FMS.Web.Client.Features.Shared
 {
     public class AppStateManager
     {
-        private LocationFilterOptions _locationListOptions;
-        public LocationFilterOptions LocationListOptions 
+        private LocationFilterVm? _locationListFilter;
+        public LocationFilterVm? LocationListFilter 
         {
             get
             {
-                var temp = _locationListOptions;
-                _locationListOptions = null;
+                var temp = _locationListFilter;
+                _locationListFilter = null;
 
                 return temp;
             }
-            set => _locationListOptions = value; 
+            set => _locationListFilter = value; 
         }
 
-        private ProductFilterOptionsVm _productFilterOptions;
-        public ProductFilterOptionsVm ProductFilterOptions 
+        private ProductFilterOptionsVm? _productFilterOptions;
+        public ProductFilterOptionsVm? ProductFilterOptions 
         {
             get
             {

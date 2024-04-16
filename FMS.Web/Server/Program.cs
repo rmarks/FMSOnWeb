@@ -1,10 +1,12 @@
-﻿using FMS.Application;
+﻿using FastEndpoints;
+using FMS.Application;
 using FMS.DAL;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 
 var builder = WebApplication.CreateBuilder();
 
 builder.Services.AddControllers();
+builder.Services.AddFastEndpoints();
 
 builder.Services.AddApplication();
 
@@ -33,6 +35,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapControllers();
+app.UseFastEndpoints();
 app.MapFallbackToFile("index.html");
 
 using (var scope = app.Services.CreateScope())

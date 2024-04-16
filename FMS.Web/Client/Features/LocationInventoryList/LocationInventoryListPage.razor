@@ -18,7 +18,7 @@
         <InventoryDetails Item="@SelectedItem" />
 
         <div class="grid my-5">
-            @foreach (var item in _pagedInventory.Results)
+            @foreach (var item in _pagedInventory.List)
             {
                 <ProductCard Item="@item" OnSelected="HandleProductSelected" />
             }

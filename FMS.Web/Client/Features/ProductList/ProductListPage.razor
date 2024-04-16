@@ -19,7 +19,7 @@
 else
 {
     <div class="grid my-5">
-        @foreach (var product in _pagedProducts.Results)
+        @foreach (var product in _pagedProducts.List)
         {
             <ProductCard Product="@product" OnSelected="@(() => HandleProductSelected(product.Id))" />
         }
