@@ -8,11 +8,11 @@
     <span class="navbar-brand">Tooted</span>
 </nav>
 
-<ProductFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))">
+<ProductListFilter Filter="@_filter" OnFilterChanged="HandleFilterChanged">
     <button class="btn btn-primary" @onclick="AddProduct">Lisa uus toode</button>
-</ProductFilter>
+</ProductListFilter>
 
-@if (_pagedProducts == null)
+@if (_pagedProducts is null)
 {
     <p>Loading...</p>
 }
@@ -26,19 +26,19 @@ else
     </div>
 
     <div class="d-flex justify-content-center">
-        <Pager Result="@_pagedProducts" OnPageChanged="HandlePagerPageChanged" />
+        <Pager Result="@_pagedProducts" OnPageChanged="HandlePageChanged" />
     </div>
 }
 
 @code {
-    private PagedResult<ProductLisItemVm> _pagedProducts;
-    private ProductFilterOptionsVm _options = new ProductFilterOptionsVm { CurrentPage = 1, PageSize = 18 };
+    private PagedResult<ProductListItemVm>? _pagedProducts;
+    private ProductListFilterVm _filter = new ProductListFilterVm { CurrentPage = 1, PageSize = 18 };
 
     protected override async Task OnInitializedAsync()
     {
         if (NavManager.Uri.ToLower().Contains("return"))
         {
-            _options = AppState.ProductFilterOptions ?? _options;
+            _filter = AppState.ProductListFilter ?? _filter;
         }
 
         await UpdateList();
@@ -46,11 +46,11 @@ else
 
     private async Task UpdateList()
     {
-        var response = await Mediator.Send(new GetProductsRequest(_options));
+        var response = await Mediator.Send(new GetProductsRequest(_filter));
         if (response.PagedProducts is null)
         {
             //errorMessage
-            _pagedProducts = new PagedResult<ProductLisItemVm>();
+            _pagedProducts = new PagedResult<ProductListItemVm>();
 
             return;
         }
@@ -58,28 +58,28 @@ else
         _pagedProducts = response.PagedProducts;
     }
 
-    private async Task HandlePagerPageChanged(int pageNo)
+    private async Task HandlePageChanged(int pageNo)
     {
-        _options.CurrentPage = pageNo;
+        _filter.CurrentPage = pageNo;
         await UpdateList();
     }
 
-    private async Task HandleFilterChanged(ProductFilterOptionsVm options)
+    private async Task HandleFilterChanged(ProductListFilterVm filter)
     {
-        _options = options;
-        _options.CurrentPage = 1;
+        _filter = filter;
+        _filter.CurrentPage = 1;
         await UpdateList();
     }
 
     private void HandleProductSelected(int productBaseId)
     {
-        AppState.ProductFilterOptions = _options;
+        AppState.ProductListFilter = _filter;
         NavManager.NavigateTo($"products/edit/{productBaseId}");
     }
 
     private void AddProduct()
     {
-        AppState.ProductFilterOptions = _options;
+        AppState.ProductListFilter = _filter;
         NavManager.NavigateTo("products/add");
     }
 }

@@ -2,7 +2,7 @@
 
 namespace FMS.Web.Shared.Features.LocationInventoryList
 {
-    public record InventoryFilterOptions : ProductFilterOptionsVm
+    public record InventoryFilterOptions : ProductListFilterVm
     {
     }
 }

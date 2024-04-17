@@ -1,13 +1,12 @@
-﻿using Ardalis.ApiEndpoints;
+﻿using FastEndpoints;
 using FMS.DAL;
 using FMS.Web.Server.Extensions;
 using FMS.Web.Shared.Features.ProductList;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Web.Server.Features.ProductList
 {
-    public class GetProductsEndpoint : BaseAsyncEndpoint.WithRequest<ProductFilterOptionsVm>.WithResponse<GetProductsRequest.Response>
+    public class GetProductsEndpoint : Endpoint<GetProductsRequest, GetProductsRequest.Response>
     {
         private readonly FMSContext _context;
 
@@ -16,61 +15,61 @@ namespace FMS.Web.Server.Features.ProductList
             _context = context;
         }
 
-        [HttpPost(GetProductsRequest.RouteTemplate)]
-        public override async Task<ActionResult<GetProductsRequest.Response>> HandleAsync(ProductFilterOptionsVm options, CancellationToken cancellationToken = default)
+        public override void Configure()
+        {
+            Post(GetProductsRequest.RouteTemplate);
+            AllowAnonymous();
+        }
+
+        public override async Task HandleAsync(GetProductsRequest req, CancellationToken ct)
         {
             var query = _context.ProductBases
                 .AsNoTracking();
 
-            if (options.ProductStatusId > 0)
+            if (req.Filter.ProductStatusId > 0)
             {
-                query = query.Where(p => p.ProductStatusId == options.ProductStatusId);
+                query = query.Where(p => p.ProductStatusId == req.Filter.ProductStatusId);
             };
 
-            if (options.ProductMaterialId > 0)
+            if (req.Filter.ProductMaterialId > 0)
             {
-                query = query.Where(p => p.ProductMaterialId == options.ProductMaterialId);
+                query = query.Where(p => p.ProductMaterialId == req.Filter.ProductMaterialId);
             };
 
-            if (options.ProductSourceTypeId > 0)
+            if (req.Filter.ProductSourceTypeId > 0)
             {
-                query = query.Where(p => p.ProductSourceTypeId == options.ProductSourceTypeId);
+                query = query.Where(p => p.ProductSourceTypeId == req.Filter.ProductSourceTypeId);
             };
 
-            if (options.ProductDestinationTypeId > 0)
+            if (req.Filter.ProductDestinationTypeId > 0)
             {
-                query = query.Where(p => p.ProductDestinationTypeId == options.ProductDestinationTypeId);
+                query = query.Where(p => p.ProductDestinationTypeId == req.Filter.ProductDestinationTypeId);
             };
 
-            if (options.ProductGroupId > 0)
+            if (req.Filter.ProductGroupId > 0)
             {
-                query = query.Where(p => p.ProductGroupId == options.ProductGroupId);
+                query = query.Where(p => p.ProductGroupId == req.Filter.ProductGroupId);
             }
-            else if (options.ProductTypeId > 0)
+            else if (req.Filter.ProductTypeId > 0)
             {
-                query = query.Where(p => p.ProductTypeId == options.ProductTypeId);
+                query = query.Where(p => p.ProductTypeId == req.Filter.ProductTypeId);
             };
 
-            if (options.ProductCollectionId > 0)
+            if (req.Filter.ProductCollectionId > 0)
             {
-                query = query.Where(p => p.ProductCollectionId == options.ProductCollectionId);
+                query = query.Where(p => p.ProductCollectionId == req.Filter.ProductCollectionId);
             }
-            else if (options.ProductBrandId > 0)
+            else if (req.Filter.ProductBrandId > 0)
             {
-                query = query.Where(p => p.ProductBrandId == options.ProductBrandId);
+                query = query.Where(p => p.ProductBrandId == req.Filter.ProductBrandId);
             };
 
             var pagedProducts = await query
                 .OrderBy(p => p.Code)
-                .Select(p => new ProductLisItemVm
-                {
-                    Id = p.Id,
-                    Code = p.Code,
-                    Name = p.Name
-                })
-                .GetPagedAsync(options.CurrentPage, options.PageSize);
+                .Select(p => new ProductListItemVm(p.Id, p.Code, p.Name))
+                .GetPagedAsync(req.Filter.CurrentPage, req.Filter.PageSize);
 
-            return Ok(new GetProductsRequest.Response(pagedProducts));
+            Response = new GetProductsRequest.Response(pagedProducts);
         }
     }
 }

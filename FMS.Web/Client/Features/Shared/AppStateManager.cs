@@ -18,17 +18,17 @@ namespace FMS.Web.Client.Features.Shared
             set => _locationListFilter = value; 
         }
 
-        private ProductFilterOptionsVm? _productFilterOptions;
-        public ProductFilterOptionsVm? ProductFilterOptions 
+        private ProductListFilterVm? _productListFilter;
+        public ProductListFilterVm? ProductListFilter 
         {
             get
             {
-                var temp = _productFilterOptions;
-                _productFilterOptions = null;
+                var temp = _productListFilter;
+                _productListFilter = null;
 
                 return temp;
             }
-            set => _productFilterOptions = value; 
+            set => _productListFilter = value; 
         }
     }
 }

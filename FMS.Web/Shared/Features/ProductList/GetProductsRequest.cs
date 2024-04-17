@@ -3,10 +3,10 @@ using MediatR;
 
 namespace FMS.Web.Shared.Features.ProductList
 {
-    public record GetProductsRequest(ProductFilterOptionsVm Options) : IRequest<GetProductsRequest.Response>
+    public record GetProductsRequest(ProductListFilterVm Filter) : IRequest<GetProductsRequest.Response>
     {
         public const string RouteTemplate = "api/products";
 
-        public record Response(PagedResult<ProductLisItemVm> PagedProducts);
+        public record Response(PagedResult<ProductListItemVm> PagedProducts);
     }
 }

@@ -1,27 +1,25 @@
 ﻿using FMS.Web.Shared.Features.ProductList;
 using MediatR;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FMS.Web.Client.Features.ProductList
 {
     public class GetProductsHandler : IRequestHandler<GetProductsRequest, GetProductsRequest.Response>
     {
-        private readonly HttpClient _http;
+        private readonly HttpClient _httpClient;
 
-        public GetProductsHandler(HttpClient http)
+        public GetProductsHandler(HttpClient httpClient)
         {
-            _http = http;
+            _httpClient = httpClient;
         }
 
         public async Task<GetProductsRequest.Response> Handle(GetProductsRequest request, CancellationToken cancellationToken)
         {
-            var response = await _http.PostAsJsonAsync(GetProductsRequest.RouteTemplate, request.Options);
-            if (response.IsSuccessStatusCode)
+            var httpResponse = await _httpClient.PostAsJsonAsync(GetProductsRequest.RouteTemplate, request);
+            if (httpResponse.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<GetProductsRequest.Response>();
+                return await httpResponse.Content.ReadFromJsonAsync<GetProductsRequest.Response>()
+                    ?? new GetProductsRequest.Response(null);
             }
             else
             {

@@ -20,7 +20,7 @@
                 <div class="container py-3">
                     <div class="row">
                         <div class="col">
-                            <select class="form-control mb-2" @bind="@_options.ProductStatusId">
+                            <select class="form-control mb-2" @bind="@_filter.ProductStatusId">
                                 <option value="0">-- Vali olek --</option>
                                 @foreach (var item in _dropdowns.ProductStatuses)
                                 {
@@ -28,7 +28,7 @@
                                 }
                             </select>
                             <select class="form-control"
-                                    @bind="@_options.ProductMaterialId">
+                                    @bind="@_filter.ProductMaterialId">
                                 <option value="0">-- Vali materjal --</option>
                                 @foreach (var item in _dropdowns.ProductMaterials)
                                 {
@@ -38,7 +38,7 @@
                         </div>
                         <div class="col">
                             <select class="form-control mb-2"
-                                    @bind="@_options.ProductSourceTypeId">
+                                    @bind="@_filter.ProductSourceTypeId">
                                 <option value="0">-- Vali lähtetüüp --</option>
                                 @foreach (var item in _dropdowns.ProductSourceTypes)
                                 {
@@ -46,7 +46,7 @@
                                 }
                             </select>
                             <select class="form-control"
-                                    @bind="@_options.ProductDestinationTypeId">
+                                    @bind="@_filter.ProductDestinationTypeId">
                                 <option value="0">-- Vali sihttüüp --</option>
                                 @foreach (var item in _dropdowns.ProductDestinationTypes)
                                 {
@@ -56,7 +56,7 @@
                         </div>
                         <div class="col">
                             <select class="form-control mb-2"
-                                    @bind="@_options.ProductTypeId">
+                                    @bind="@_filter.ProductTypeId">
                                 <option value="0">-- Vali tüüp --</option>
                                 @foreach (var item in _dropdowns.ProductTypes)
                                 {
@@ -64,9 +64,9 @@
                                 }
                             </select>
                             <select class="form-control"
-                                    @bind="@_options.ProductGroupId">
+                                    @bind="@_filter.ProductGroupId">
                                 <option value="0">-- Vali grupp --</option>
-                                @foreach (var item in _dropdowns.GetFilteredProductGroups(_options.ProductTypeId))
+                                @foreach (var item in _dropdowns.GetFilteredProductGroups(_filter.ProductTypeId))
                                 {
                                     <option value="@item.Id">@item.Name</option>
                                 }
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col">
                             <select class="form-control mb-2"
-                                    @bind="@_options.ProductBrandId">
+                                    @bind="@_filter.ProductBrandId">
                                 <option value="0">-- Vali kaubamärk --</option>
                                 @foreach (var item in _dropdowns.ProductBrands)
                                 {
@@ -82,9 +82,9 @@
                                 }
                             </select>
                             <select class="form-control"
-                                    @bind="@_options.ProductCollectionId">
+                                    @bind="@_filter.ProductCollectionId">
                                 <option value="0">-- Vali kollektsioon --</option>
-                                @foreach (var item in _dropdowns.GetFilteredProductCollections(_options.ProductBrandId))
+                                @foreach (var item in _dropdowns.GetFilteredProductCollections(_filter.ProductBrandId))
                                 {
                                     <option value="@item.Id">@item.Name</option>
                                 }
@@ -106,47 +106,46 @@
 
 @code {
     private bool _isOpen;
-    private ProductFilterDropdownsVm _dropdowns;
-    private ProductFilterOptionsVm _options;
+    private ProductListFilterDropdownsVm? _dropdowns;
+    private ProductListFilterVm _filter = default!;
 
-    [Parameter] public ProductFilterOptionsVm Options { get; set; }
-    [Parameter] public EventCallback<ProductFilterOptionsVm> OnOptionsChanged { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter, EditorRequired] public ProductListFilterVm Filter { get; set; } = default!;
+    [Parameter] public EventCallback<ProductListFilterVm> OnFilterChanged { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Mediator.Send(new GetProductFilterDropdownsRequest());
-        if (response.Dropdowns is not null)
-        {
-            _dropdowns = response.Dropdowns;
-        }
+        var response = await Mediator.Send(new GetProductsFilterDropdownsRequest());
+        if (response.Dropdowns is null) throw new Exception("Can't load Product filter dropdowns");
+
+        _dropdowns = response.Dropdowns;
     }
 
     private void ShowFilter()
     {
         _isOpen = true;
 
-        _options = Options with { };
+        _filter = Filter with { };
     }
 
-    private void SubmitFilter()
+    private async Task SubmitFilter()
     {
         _isOpen = false;
 
-        if (_options != Options)
+        if (_filter != Filter)
         {
-            OnOptionsChanged.InvokeAsync(_options);
+            await OnFilterChanged.InvokeAsync(_filter);
         }
     }
 
     private void ResetFilter()
     {
-        var properties = typeof(ProductFilterOptionsVm).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var properties = typeof(ProductListFilterVm).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         foreach (var property in properties)
         {
             if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))
             {
-                property.SetValue(_options, 0);
+                property.SetValue(_filter, 0);
             }
         }
     }
