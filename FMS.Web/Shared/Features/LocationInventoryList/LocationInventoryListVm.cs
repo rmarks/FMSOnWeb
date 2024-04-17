@@ -1,6 +1,6 @@
 ﻿namespace FMS.Web.Shared.Features.LocationInventoryList
 {
-    public class LocationInventoryListDto
+    public class LocationInventoryListVm
     {
         public int ProductBaseId { get; set; }
         public string ProductBaseCode { get; set; }

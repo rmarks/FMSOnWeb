@@ -1,4 +1,4 @@
-﻿@inject HttpClient Http
+﻿@inject HttpClient HttpClient
 
 <div class="drawer-wrapper @(_isOpen ? "slide" : "")">
     <div class="drawer-mask"></div>
@@ -69,12 +69,12 @@
 
 @code {
     private bool _isOpen;
-    private InventoryDetailsDto _details;
+    private InventoryDetailsVm? _details;
 
-    [Parameter] public LocationInventoryListDto Item { get; set; }
+    [Parameter] public LocationInventoryListVm? Item { get; set; }
 
     // private string ItemImage => Item == null ? null : $"img/products/{Item.ProductBaseCode}.jpg";
-    private string ItemImage => Item == null ? null : $"https://fmsimagesapi.azurewebsites.net/api/{Item.ProductBaseCode}";
+    private string? ItemImage => Item == null ? null : $"https://fmsimagesapi.azurewebsites.net/api/{Item.ProductBaseCode}";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -83,11 +83,14 @@
             //_details = await Http.GetFromJsonAsync<InventoryDetailsDto>($"api/locationinventory/{Item.LocationId}/product/{Item.ProductBaseId}");
             //_isOpen = true;
 
-            var response = await Http.PostAsJsonAsync<InventoryDetailsRequest>("api/locationinventory/details", new InventoryDetailsRequest(Item.LocationId, Item.ProductBaseId));
-            if (response.IsSuccessStatusCode)
+            var httpResponse = await HttpClient.PostAsJsonAsync<GetInventoryDetailsRequest>(
+                GetInventoryDetailsRequest.RouteTemplate,
+                new GetInventoryDetailsRequest(Item.LocationId, Item.ProductBaseId));
+
+            if (httpResponse.IsSuccessStatusCode)
             {
-                var dto = await response.Content.ReadFromJsonAsync<InventoryDetailsRequest.Response>();
-                _details = dto.InventoryDetails;
+                var response = await httpResponse.Content.ReadFromJsonAsync<GetInventoryDetailsRequest.Response>();
+                _details = response?.InventoryDetails;
                 _isOpen = true;
             }
         }

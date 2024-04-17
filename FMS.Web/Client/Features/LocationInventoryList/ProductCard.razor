@@ -14,11 +14,8 @@
 
 
 @code {
-    [Parameter]
-    public LocationInventoryListDto Item { get; set; }
-
-    [Parameter]
-    public EventCallback<LocationInventoryListDto> OnSelected { get; set; }
+    [Parameter, EditorRequired] public LocationInventoryListVm Item { get; set; } = default!;
+    [Parameter] public EventCallback<LocationInventoryListVm> OnSelected { get; set; }
 
     // private string ImagePath => $"img/products/{Item.ProductBaseCode}.jpg";
     private string ImagePath => $"https://fmsimagesapi.azurewebsites.net/api/{Item.ProductBaseCode}";

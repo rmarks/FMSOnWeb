@@ -1,5 +1,5 @@
 ﻿@page "/locations/{Id:int}/inventory"
-@inject HttpClient Http
+@inject HttpClient HttpClient
 
 <div>
     <nav class="navbar navbar-dark bg-secondary rounded-top zindex-like-filter-drawer">
@@ -7,9 +7,9 @@
         <NavLink class="btn btn-primary ml-auto" href="locations/return">Tagasi</NavLink>
     </nav>
 
-    <InventoryFilter Options="@_options" OnOptionsChanged="@((p) => HandleFilterChanged(p))" />
+    <InventoryFilter Filter="@_filter" OnFilterChanged="@((p) => HandleFilterChanged(p))" />
 
-    @if (_pagedInventory == null)
+    @if (_pagedInventory is null)
     {
         <p>Loading...</p>
     }
@@ -25,19 +25,19 @@
         </div>
 
         <div class="d-flex justify-content-center">
-            <Pager Result="@_pagedInventory" OnPageChanged="HandlePagerPageChanged" />
+            <Pager Result="@_pagedInventory" OnPageChanged="HandlePageChanged" />
         </div>
     }
 </div>
 
 
 @code {
-    private PagedResult<LocationInventoryListDto> _pagedInventory;
-    private InventoryFilterOptions _options = new InventoryFilterOptions { CurrentPage = 1, PageSize = 18 };
-    private LocationInventoryListDto _selectedItem;
-    private string _locationName;
+    private PagedResult<LocationInventoryListVm>? _pagedInventory;
+    private InventoryListFilterVm _filter = new InventoryListFilterVm { CurrentPage = 1, PageSize = 18 };
+    private LocationInventoryListVm? _selectedItem;
+    private string? _locationName;
 
-    private LocationInventoryListDto SelectedItem
+    private LocationInventoryListVm? SelectedItem
     {
         get
         {
@@ -57,44 +57,43 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}", _options);
-        var response = await Http.PostAsJsonAsync<LocationInventoryListRequest>("api/locationinventory", new LocationInventoryListRequest(Id, _options, true));
-        if (response.IsSuccessStatusCode)
-        {
-            var dto = await response.Content.ReadFromJsonAsync<LocationInventoryListRequest.Response>();
-            _locationName = dto.LocationName;
-            _pagedInventory = dto.PagedInventory;
-        }
+        await UpdateList(true);
     }
 
     #region helpers
-    private async Task UpdateList()
+    private async Task UpdateList(bool isLocationNameRequired = false)
     {
-        //var response = await Http.PostAsJsonAsync<LocationInventoryListOptions>($"api/locationinventory/{Id}/list", _options);
-        var response = await Http.PostAsJsonAsync<LocationInventoryListRequest>("api/locationinventory", new LocationInventoryListRequest(Id, _options));
-        if (response.IsSuccessStatusCode)
+        var httpResponse = await HttpClient.PostAsJsonAsync<GetLocationInventoryListRequest>(
+            GetLocationInventoryListRequest.RouteTemplate,
+            new GetLocationInventoryListRequest(Id, _filter, isLocationNameRequired));
+
+        if (httpResponse.IsSuccessStatusCode)
         {
-            var dto = await response.Content.ReadFromJsonAsync<LocationInventoryListRequest.Response>();
-            _pagedInventory = dto.PagedInventory;
+            var response = await httpResponse.Content.ReadFromJsonAsync<GetLocationInventoryListRequest.Response>();
+            if (response is null) throw new Exception("Can't load inventory list.");
+
+            if (response.LocationName is not null) _locationName = response.LocationName;
+            
+            _pagedInventory = response.PagedInventory;
         }
     }
     #endregion
 
     #region event handlers
-    private async Task HandlePagerPageChanged(int pageNo)
+    private async Task HandlePageChanged(int pageNo)
     {
-        _options.CurrentPage = pageNo;
+        _filter.CurrentPage = pageNo;
         await UpdateList();
     }
 
-    private async Task HandleFilterChanged(InventoryFilterOptions options)
+    private async Task HandleFilterChanged(InventoryListFilterVm options)
     {
-        _options = options;
-        _options.CurrentPage = 1;
+        _filter = options;
+        _filter.CurrentPage = 1;
         await UpdateList();
     }
 
-    private void HandleProductSelected(LocationInventoryListDto item)
+    private void HandleProductSelected(LocationInventoryListVm item)
     {
         _selectedItem = item;
     }

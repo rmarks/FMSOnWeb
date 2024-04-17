@@ -1,8 +1,8 @@
-﻿@inject HttpClient Http
+﻿@inject HttpClient HttpClient
 @using System.Reflection
 
 <FilterDrawer OnOpen="HandleOpen" OnSubmit="HandleSubmit" OnReset="HandleReset" @ref="@_filterDrawer">
-    @if (_dropdowns != null)
+    @if (_dropdowns is not null)
     {
         <div class="row bg-light mx-0 py-2 mb-4">
             <div class="col">
@@ -10,7 +10,7 @@
                     <label class="col-5 col-form-label text-right text-secondary">Toote olek</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductStatusId">
+                                @bind="@_filter.ProductStatusId">
                             <option value="0">-- Kõik --</option>
                             @foreach (var item in _dropdowns.ProductStatuses)
                             {
@@ -23,7 +23,7 @@
                     <label class="col-5 col-form-label text-right text-secondary">Toote materjal</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductMaterialId">
+                                @bind="@_filter.ProductMaterialId">
                             <option value="0">-- Kõik --</option>
                             @foreach (var item in _dropdowns.ProductMaterials)
                             {
@@ -39,7 +39,7 @@
                     <label class="col-5 col-form-label text-right text-secondary">Toote lähtetüüp</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductSourceTypeId">
+                                @bind="@_filter.ProductSourceTypeId">
                             <option value="0">-- Kõik --</option>
                             @foreach (var item in _dropdowns.ProductSourceTypes)
                             {
@@ -52,7 +52,7 @@
                     <label class="col-5 col-form-label text-right text-secondary">Toote sihttüüp</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductDestinationTypeId">
+                                @bind="@_filter.ProductDestinationTypeId">
                             <option value="0">-- Kõik --</option>
                             @foreach (var item in _dropdowns.ProductDestinationTypes)
                             {
@@ -68,7 +68,7 @@
                     <label class="col-5 col-form-label text-right text-secondary">Toote tüüp</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductTypeId">
+                                @bind="@_filter.ProductTypeId">
                             <option value="0">-- Kõik --</option>
                             @foreach (var item in _dropdowns.ProductTypes)
                             {
@@ -81,9 +81,9 @@
                     <label class="col-5 col-form-label text-right text-secondary">Toote grupp</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductGroupId">
+                                @bind="@_filter.ProductGroupId">
                             <option value="0">-- Kõik --</option>
-                            @foreach (var item in _dropdowns.GetFilteredProductGroups(_options.ProductTypeId))
+                            @foreach (var item in _dropdowns.GetFilteredProductGroups(_filter.ProductTypeId))
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }
@@ -97,7 +97,7 @@
                     <label class="col-5 col-form-label text-right text-secondary">Kaubamärk</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductBrandId">
+                                @bind="@_filter.ProductBrandId">
                             <option value="0">-- Kõik --</option>
                             @foreach (var item in _dropdowns.ProductBrands)
                             {
@@ -110,9 +110,9 @@
                     <label class="col-5 col-form-label text-right text-secondary">Kollektsioon</label>
                     <div class="col-7">
                         <select class="form-control"
-                                @bind="@_options.ProductCollectionId">
+                                @bind="@_filter.ProductCollectionId">
                             <option value="0">-- Kõik --</option>
-                            @foreach (var item in _dropdowns.GetFilteredProductCollections(_options.ProductBrandId))
+                            @foreach (var item in _dropdowns.GetFilteredProductCollections(_filter.ProductBrandId))
                             {
                                 <option value="@item.Id">@item.Name</option>
                             }
@@ -126,33 +126,33 @@
 
 
 @code {
-    private InventoryFilterDropdowns _dropdowns;
-    private InventoryFilterOptions _options;
-    private FilterDrawer _filterDrawer;
+    private InventoryFilterDropdownsVm? _dropdowns;
+    private InventoryListFilterVm _filter = default!;
+    private FilterDrawer _filterDrawer = default!;
 
-    [Parameter] public InventoryFilterOptions Options { get; set; }
-    [Parameter] public EventCallback<InventoryFilterOptions> OnOptionsChanged { get; set; }
+    [Parameter, EditorRequired] public InventoryListFilterVm Filter { get; set; } = default!;
+    [Parameter] public EventCallback<InventoryListFilterVm> OnFilterChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _dropdowns = await Http.GetFromJsonAsync<InventoryFilterDropdowns>("api/locationinventory/dropdowns");
+        _dropdowns = await HttpClient.GetFromJsonAsync<InventoryFilterDropdownsVm>("api/locationinventory/dropdowns");
     }
 
     private void HandleOpen()
     {
-        _options = Options with { };
+        _filter = Filter with { };
     }
 
     private void HandleSubmit()
     {
-        if (_options != Options)
+        if (_filter != Filter)
         {
-            OnOptionsChanged.InvokeAsync(_options);
+            OnFilterChanged.InvokeAsync(_filter);
         }
     }
 
     private void HandleReset()
     {
-        _filterDrawer.ResetFilter(_options);
+        _filterDrawer.ResetFilter(_filter);
     }
 }

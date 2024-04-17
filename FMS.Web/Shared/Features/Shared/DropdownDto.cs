@@ -1,8 +1,7 @@
-﻿namespace FMS.Web.Shared.Features.Shared
+﻿namespace FMS.Web.Shared.Features.Shared;
+
+public class DropdownDto
 {
-    public class DropdownDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
 }
