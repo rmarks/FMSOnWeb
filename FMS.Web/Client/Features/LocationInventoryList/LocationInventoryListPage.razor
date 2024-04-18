@@ -7,7 +7,7 @@
         <NavLink class="btn btn-primary ml-auto" href="locations/return">Tagasi</NavLink>
     </nav>
 
-    <InventoryFilter Filter="@_filter" OnFilterChanged="@((p) => HandleFilterChanged(p))" />
+    <ProductFilter Filter="@_filter" OnSubmit="HandleFilterSubmitted" />
 
     @if (_pagedInventory is null)
     {
@@ -33,7 +33,7 @@
 
 @code {
     private PagedResult<LocationInventoryListVm>? _pagedInventory;
-    private InventoryListFilterVm _filter = new InventoryListFilterVm { CurrentPage = 1, PageSize = 18 };
+    private ProductFilterVm _filter = new ProductFilterVm { CurrentPage = 1, PageSize = 18 };
     private LocationInventoryListVm? _selectedItem;
     private string? _locationName;
 
@@ -86,9 +86,9 @@
         await UpdateList();
     }
 
-    private async Task HandleFilterChanged(InventoryListFilterVm options)
+    private async Task HandleFilterSubmitted(ProductFilterVm filter)
     {
-        _filter = options;
+        _filter = filter;
         _filter.CurrentPage = 1;
         await UpdateList();
     }

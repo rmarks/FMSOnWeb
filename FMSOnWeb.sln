@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31025.194
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.Web.Server", "FMS.Web\Server\FMS.Web.Server.csproj", "{18BED465-4424-4C31-AEC9-C075067F5B45}"
 EndProject
@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.DAL", "FMS.DAL\FMS.DAL.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentLibrary", "ComponentLibrary\ComponentLibrary.csproj", "{AC98CAD0-863C-47A0-8ED0-18014341B33C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMS.Application", "FMS.Application\FMS.Application.csproj", "{2A75E5C6-37AC-44C4-A245-CEE815D6368A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMS.Application", "FMS.Application\FMS.Application.csproj", "{2A75E5C6-37AC-44C4-A245-CEE815D6368A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,4 @@
-﻿using FMS.Web.Shared.Features.Shared;
-using System.Collections.Generic;
+﻿using FMS.Web.Shared.Features.Shared.Dropdowns;
 
 namespace FMS.Web.Shared.Features.Product
 {

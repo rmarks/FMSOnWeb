@@ -4,6 +4,6 @@ namespace ComponentLibrary.Tabs
 {
     public interface ITab
     {
-        RenderFragment ChildContent { get; }
+        RenderFragment? ChildContent { get; }
     }
 }

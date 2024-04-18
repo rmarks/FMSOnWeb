@@ -1,10 +1,11 @@
-﻿@using System.Reflection
-
-<div class="drawer-wrapper @(_isOpen ? "slide" : "")">
+﻿<div class="drawer-wrapper @(_isOpen ? "slide" : "")">
     <div class="drawer-mask"></div>
 
-    <div class="bg-light border rounded-bottom p-2">
+    <div class="bg-light border rounded-bottom p-2 d-flex justify-content-between align-items-center">
         <button class="btn btn-link" @onclick="OpenFilter">Muuda filtrit</button>
+        <div>
+            @HeaderContent
+        </div>
     </div>
 
     @if (_isOpen)
@@ -27,7 +28,8 @@
 @code {
     private bool _isOpen;
 
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
     [Parameter] public EventCallback OnOpen { get; set; }
     [Parameter] public EventCallback OnSubmit { get; set; }
     [Parameter] public EventCallback OnReset { get; set; }
@@ -42,18 +44,6 @@
     {
         _isOpen = false;
         OnSubmit.InvokeAsync();
-    }
-
-    public void ResetFilter<TOptions>(TOptions options)
-    {
-        var properties = typeof(TOptions).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (var property in properties)
-        {
-            if (property.PropertyType == typeof(int) && !property.Name.ToLower().Contains("page"))
-            {
-                property.SetValue(options, 0);
-            }
-        }
     }
 
     public void CloseFilter()

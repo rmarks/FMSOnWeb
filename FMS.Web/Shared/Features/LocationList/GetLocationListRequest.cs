@@ -1,4 +1,4 @@
-﻿using FMS.Web.Shared.Features.Shared;
+﻿using FMS.Web.Shared.Features.Shared.Paged;
 
 namespace FMS.Web.Shared.Features.LocationList;
 

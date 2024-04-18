@@ -1,5 +1,5 @@
 ﻿using FMS.Web.Shared.Features.Product;
-using FMS.Web.Shared.Features.Shared;
+using FMS.Web.Shared.Features.Shared.Dropdowns;
 
 namespace FMS.Application.Features.Product.ProductVariants
 {

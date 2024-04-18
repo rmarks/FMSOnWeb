@@ -1,29 +1,29 @@
 ﻿using FastEndpoints;
 using FMS.DAL;
-using FMS.Web.Shared.Features.ProductList;
-using FMS.Web.Shared.Features.Shared;
+using FMS.Web.Shared.Features.Shared.Dropdowns;
+using FMS.Web.Shared.Features.Shared.ProductFilter;
 using Microsoft.EntityFrameworkCore;
 
-namespace FMS.Web.Server.Features.ProductList
+namespace FMS.Web.Server.Features.Shared.ProductFilter
 {
-    public class GetProductsFilterDropdownsEndpoint : EndpointWithoutRequest<GetProductsFilterDropdownsRequest.Response>
+    public class GetProductFilterDropdownsEndpoint : EndpointWithoutRequest<GetProductFilterDropdownsRequest.Response>
     {
         private readonly FMSContext _context;
 
-        public GetProductsFilterDropdownsEndpoint(FMSContext context)
+        public GetProductFilterDropdownsEndpoint(FMSContext context)
         {
             _context = context;
         }
 
         public override void Configure()
         {
-            Get(GetProductsFilterDropdownsRequest.RouteTemplate);
+            Get(GetProductFilterDropdownsRequest.RouteTemplate);
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(CancellationToken ct)
         {
-            var dropdowns = new ProductListFilterDropdownsVm
+            var dropdowns = new ProductFilterDropdownsVm
             {
                 ProductStatuses = await _context.ProductStatuses
                     .AsNoTracking()
@@ -66,7 +66,7 @@ namespace FMS.Web.Server.Features.ProductList
                     .ToListAsync()
             };
 
-            Response = new GetProductsFilterDropdownsRequest.Response(dropdowns);
+            Response = new GetProductFilterDropdownsRequest.Response(dropdowns);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 
 namespace FMS.Web.Client.Features.ProductList
 {
-    public class GetProductsHandler : IRequestHandler<GetProductsRequest, GetProductsRequest.Response>
+    public class GetProductsHandler : IRequestHandler<GetProductsRequest, GetProductsRequest.Response?>
     {
         private readonly HttpClient _httpClient;
 
@@ -13,17 +13,16 @@ namespace FMS.Web.Client.Features.ProductList
             _httpClient = httpClient;
         }
 
-        public async Task<GetProductsRequest.Response> Handle(GetProductsRequest request, CancellationToken cancellationToken)
+        public async Task<GetProductsRequest.Response?> Handle(GetProductsRequest request, CancellationToken cancellationToken)
         {
             var httpResponse = await _httpClient.PostAsJsonAsync(GetProductsRequest.RouteTemplate, request);
             if (httpResponse.IsSuccessStatusCode)
             {
-                return await httpResponse.Content.ReadFromJsonAsync<GetProductsRequest.Response>()
-                    ?? new GetProductsRequest.Response(null);
+                return await httpResponse.Content.ReadFromJsonAsync<GetProductsRequest.Response>();
             }
             else
             {
-                return new GetProductsRequest.Response(null);
+                return null;
             }
         }
     }

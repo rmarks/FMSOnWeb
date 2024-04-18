@@ -8,15 +8,15 @@
 
 @code {
     [CascadingParameter]
-    public TabSet ContainerTabSet { get; set; }
+    public TabSet ContainerTabSet { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
 
     [Parameter]
-    public string Title { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
-
-    private string TitleCssClass => ContainerTabSet.ActiveTab == this ? "active font-weight-bold" : null;
+    private string? TitleCssClass => ContainerTabSet.ActiveTab == this ? "active font-weight-bold" : null;
 
     protected override void OnInitialized()
     {

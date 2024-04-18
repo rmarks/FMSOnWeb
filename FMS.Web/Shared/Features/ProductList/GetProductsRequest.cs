@@ -1,9 +1,10 @@
-﻿using FMS.Web.Shared.Features.Shared;
+﻿using FMS.Web.Shared.Features.Shared.Paged;
+using FMS.Web.Shared.Features.Shared.ProductFilter;
 using MediatR;
 
 namespace FMS.Web.Shared.Features.ProductList
 {
-    public record GetProductsRequest(ProductListFilterVm Filter) : IRequest<GetProductsRequest.Response>
+    public record GetProductsRequest(ProductFilterVm Filter) : IRequest<GetProductsRequest.Response>
     {
         public const string RouteTemplate = "api/products";
 

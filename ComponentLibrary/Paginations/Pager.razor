@@ -34,11 +34,9 @@
 }
 
 @code {
-    [Parameter]
-    public PagedResultBase Result { get; set; }
+    [Parameter, EditorRequired] public PagedResultBase Result { get; set; } = default!;
 
-    [Parameter]
-    public EventCallback<int> OnPageChanged { get; set; }
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }
 
     private int StartIndex { get; set; }
     private int FinishIndex { get; set; }

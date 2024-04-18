@@ -8,9 +8,9 @@
     <span class="navbar-brand">Tooted</span>
 </nav>
 
-<ProductListFilter Filter="@_filter" OnFilterChanged="HandleFilterChanged">
+<ProductFilter Filter="@_filter" OnSubmit="HandleFilterSubmitted">
     <button class="btn btn-primary" @onclick="AddProduct">Lisa uus toode</button>
-</ProductListFilter>
+</ProductFilter>
 
 @if (_pagedProducts is null)
 {
@@ -32,7 +32,7 @@ else
 
 @code {
     private PagedResult<ProductListItemVm>? _pagedProducts;
-    private ProductListFilterVm _filter = new ProductListFilterVm { CurrentPage = 1, PageSize = 18 };
+    private ProductFilterVm _filter = new ProductFilterVm { CurrentPage = 1, PageSize = 18 };
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,15 +47,7 @@ else
     private async Task UpdateList()
     {
         var response = await Mediator.Send(new GetProductsRequest(_filter));
-        if (response.PagedProducts is null)
-        {
-            //errorMessage
-            _pagedProducts = new PagedResult<ProductListItemVm>();
-
-            return;
-        }
-
-        _pagedProducts = response.PagedProducts;
+        _pagedProducts = response.PagedProducts ?? throw new Exception("Can't load paged product list");
     }
 
     private async Task HandlePageChanged(int pageNo)
@@ -64,7 +56,7 @@ else
         await UpdateList();
     }
 
-    private async Task HandleFilterChanged(ProductListFilterVm filter)
+    private async Task HandleFilterSubmitted(ProductFilterVm filter)
     {
         _filter = filter;
         _filter.CurrentPage = 1;

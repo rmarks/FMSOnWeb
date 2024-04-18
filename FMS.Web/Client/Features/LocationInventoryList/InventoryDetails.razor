@@ -8,21 +8,21 @@
                 <img src="@ItemImage" style="width: 15.625rem;" />
                 <div class="d-flex flex-column justify-content-between flex-grow-1 p-3">
                     <div>
-                        <h4>@_details?.ProductBaseInventory.ProductBaseCode</h4>
-                        <h6>@_details?.ProductBaseInventory.ProductBaseName</h6>
+                        <h4>@_details?.ProductBaseInventory?.ProductBaseCode</h4>
+                        <h6>@_details?.ProductBaseInventory?.ProductBaseName</h6>
                     </div>
                     <div>
                         <div class="row">
                             <div class="col-6">Laos:</div>
-                            <div class="col-6">@_details?.ProductBaseInventory.StockQuantity</div>
+                            <div class="col-6">@_details?.ProductBaseInventory?.StockQuantity</div>
                         </div>
                         <div class="row">
                             <div class="col-6">Reserveeritud:</div>
-                            <div class="col-6">@_details?.ProductBaseInventory.ReservedQuantity</div>
+                            <div class="col-6">@_details?.ProductBaseInventory?.ReservedQuantity</div>
                         </div>
                         <div class="row">
                             <div class="col-6">Vaba:</div>
-                            <div class="col-6">@_details?.ProductBaseInventory.FreeQuantity</div>
+                            <div class="col-6">@_details?.ProductBaseInventory?.FreeQuantity</div>
                         </div>
                     </div>
                 </div>

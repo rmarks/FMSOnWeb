@@ -1,5 +1,5 @@
 ﻿using FMS.Web.Shared.Features.LocationList;
-using FMS.Web.Shared.Features.ProductList;
+using FMS.Web.Shared.Features.Shared.ProductFilter;
 
 namespace FMS.Web.Client.Features.Shared
 {
@@ -18,8 +18,8 @@ namespace FMS.Web.Client.Features.Shared
             set => _locationListFilter = value; 
         }
 
-        private ProductListFilterVm? _productListFilter;
-        public ProductListFilterVm? ProductListFilter 
+        private ProductFilterVm? _productListFilter;
+        public ProductFilterVm? ProductListFilter 
         {
             get
             {

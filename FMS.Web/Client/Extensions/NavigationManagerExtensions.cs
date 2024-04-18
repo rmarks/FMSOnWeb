@@ -18,7 +18,7 @@ namespace FMS.Web.Client.Extensions
                 }
             }
 
-            value = default;
+            value = default!;
             return false;
         }
     }

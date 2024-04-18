@@ -1,35 +1,34 @@
 ﻿using FMS.Web.Shared.Features.Product;
-using FMS.Web.Shared.Features.Shared;
+using FMS.Web.Shared.Features.Shared.Dropdowns;
 
-namespace FMS.Application.Features.Product.ProductPrices
+namespace FMS.Application.Features.Product.ProductPrices;
+
+public static class GetProductPricesDropdowns
 {
-    public static class GetProductPricesDropdowns
+    public record Query : IRequest<ProductPricesDropdowns>;
+
+    public class Handler : IRequestHandler<Query, ProductPricesDropdowns>
     {
-        public record Query : IRequest<ProductPricesDropdowns>;
+        private readonly FMSContext _context;
 
-        public class Handler : IRequestHandler<Query, ProductPricesDropdowns>
+        public Handler(FMSContext context)
         {
-            private readonly FMSContext _context;
+            _context = context;
+        }
 
-            public Handler(FMSContext context)
+        public async Task<ProductPricesDropdowns> Handle(Query request, CancellationToken cancellationToken)
+        {
+            return new ProductPricesDropdowns
             {
-                _context = context;
-            }
-
-            public async Task<ProductPricesDropdowns> Handle(Query request, CancellationToken cancellationToken)
-            {
-                return new ProductPricesDropdowns
-                {
-                    PriceLists = await _context.PriceLists
-                        .AsNoTracking()
-                        .Select(p => new DropdownDto
-                        {
-                            Id = p.Id,
-                            Name = p.Name
-                        })
-                        .ToListAsync()
-                };
-            }
+                PriceLists = await _context.PriceLists
+                    .AsNoTracking()
+                    .Select(p => new DropdownDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    })
+                    .ToListAsync()
+            };
         }
     }
 }

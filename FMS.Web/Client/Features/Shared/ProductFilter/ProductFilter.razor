@@ -1,0 +1,128 @@
+﻿@inject HttpClient HttpClient
+@using System.Reflection
+
+<FilterDrawer OnOpen="HandleOpen" OnSubmit="HandleSubmit" OnReset="HandleReset">
+    <HeaderContent>
+        @ChildContent
+    </HeaderContent>
+    <ChildContent>
+        @if (_dropdowns is not null)
+        {
+            <div class="container py-3">
+                <div class="row">
+                    <div class="col">
+                        <select class="form-control mb-2" @bind="@_filter.ProductStatusId">
+                            <option value="0">-- Vali olek --</option>
+                            @foreach (var item in _dropdowns.ProductStatuses)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <select class="form-control"
+                                @bind="@_filter.ProductMaterialId">
+                            <option value="0">-- Vali materjal --</option>
+                            @foreach (var item in _dropdowns.ProductMaterials)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-control mb-2"
+                                @bind="@_filter.ProductSourceTypeId">
+                            <option value="0">-- Vali lähtetüüp --</option>
+                            @foreach (var item in _dropdowns.ProductSourceTypes)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <select class="form-control"
+                                @bind="@_filter.ProductDestinationTypeId">
+                            <option value="0">-- Vali sihttüüp --</option>
+                            @foreach (var item in _dropdowns.ProductDestinationTypes)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-control mb-2"
+                                @bind="@_filter.ProductTypeId">
+                            <option value="0">-- Vali tüüp --</option>
+                            @foreach (var item in _dropdowns.ProductTypes)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <select class="form-control"
+                                @bind="@_filter.ProductGroupId">
+                            <option value="0">-- Vali grupp --</option>
+                            @foreach (var item in _dropdowns.GetFilteredProductGroups(_filter.ProductTypeId))
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-control mb-2"
+                                @bind="@_filter.ProductBrandId">
+                            <option value="0">-- Vali kaubamärk --</option>
+                            @foreach (var item in _dropdowns.ProductBrands)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <select class="form-control"
+                                @bind="@_filter.ProductCollectionId">
+                            <option value="0">-- Vali kollektsioon --</option>
+                            @foreach (var item in _dropdowns.GetFilteredProductCollections(_filter.ProductBrandId))
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        }
+    </ChildContent>
+</FilterDrawer>
+
+@code {
+    private ProductFilterVm _filter = default!;
+    private ProductFilterDropdownsVm? _dropdowns;
+
+    [Parameter, EditorRequired] public ProductFilterVm Filter { get; set; } = default!;
+    [Parameter] public EventCallback<ProductFilterVm> OnSubmit { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await HttpClient.GetFromJsonAsync<GetProductFilterDropdownsRequest.Response>(GetProductFilterDropdownsRequest.RouteTemplate);
+        _dropdowns = response?.Dropdowns ?? throw new Exception("Can't load product filter");
+    }
+
+    private void HandleOpen()
+    {
+        _filter = Filter with { };
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (_filter != Filter)
+        {
+            await OnSubmit.InvokeAsync(_filter);
+        }
+    }
+
+    private void HandleReset()
+    {
+        var properties = _filter.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties)
+        {
+            if (!property.Name.ToLower().Contains("page"))
+            {
+                property.SetValue(_filter, default);
+            }
+        }
+    }
+}

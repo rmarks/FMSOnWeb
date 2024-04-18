@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using FMS.DAL;
-using FMS.Web.Shared.Features.Shared;
+using FMS.Web.Shared.Features.Shared.Dropdowns;
 using Microsoft.EntityFrameworkCore;
 
 namespace FMS.Web.Server.Features.LocationList;

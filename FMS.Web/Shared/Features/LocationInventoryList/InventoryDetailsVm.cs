@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace FMS.Web.Shared.Features.LocationInventoryList;
+﻿namespace FMS.Web.Shared.Features.LocationInventoryList;
 
 public class InventoryDetailsVm
 {
-    public LocationInventoryListVm ProductBaseInventory { get; set; }
+    public LocationInventoryListVm? ProductBaseInventory { get; set; }
 
-    public IList<ProductPriceVm> ProductPrices { get; set; }
+    public IList<ProductPriceVm> ProductPrices { get; set; } = default!;
 }
