@@ -1,0 +1,96 @@
+﻿@inject HttpClient Http
+
+@if (_dropdowns is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-3">
+            <FormSection>
+                <div class="form-group">
+                    <label class="font-weight-bold text-secondary">Hinnakirjad</label>
+                    <select class="form-control" value="@_priceListId" @onchange="HandlePriceListChanged">
+                        @foreach (var item in _dropdowns.PriceLists)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </FormSection>
+        </div>
+
+        <div class="col-4">
+            <EditForm Model="@_prices">
+                <FormSection>
+                    <div class="row justify-content-center">
+                        <div class="col-5">
+                            <label class="font-weight-bold text-secondary">Kood</label>
+                        </div>
+                        <div class="col-4 text-right">
+                            <label class="font-weight-bold text-secondary">Hind</label>
+                        </div>
+                    </div>
+                    @foreach (var item in _prices)
+                    {
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-5">
+                                <InputText class="form-control" @bind-Value="@item.ProductCode" />
+                            </div>
+                            <div class="col-4">
+                                <InputNumber class="form-control text-right" @bind-Value="@item.UnitPrice" />
+                            </div>
+                        </div>
+                    }
+                </FormSection>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    private ProductPricesDropdownsVm? _dropdowns;
+    private int _priceListId = 1;
+    private IEnumerable<ProductPriceVm> _prices = default!;
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            await LoadPrices();
+        }
+
+        await LoadDropdowns();
+    }
+
+    private async Task HandlePriceListChanged(ChangeEventArgs args)
+    {
+        if (int.TryParse(args.Value?.ToString(), out int result))
+        {
+            _priceListId = result;
+            await LoadPrices();
+        }
+
+    }
+
+    #region helpers
+    private async Task LoadPrices()
+    {
+        var response = await Http.GetFromJsonAsync<GetProductPricesRequest.Response>(
+            GetProductPricesRequest.RouteTemplate.Replace("{ProductBaseId}", Id.ToString())
+                                                 .Replace("{PriceListId}", _priceListId.ToString()));
+
+        _prices = response?.ProductPrices.Adapt<IEnumerable<ProductPriceVm>>() ?? Enumerable.Empty<ProductPriceVm>();
+    }
+
+    private async Task LoadDropdowns()
+    {
+            var response = await Http.GetFromJsonAsync<GetPPDropdownsRequest.Response>(GetPPDropdownsRequest.RouteTemplate);
+            
+            _dropdowns = response?.Adapt<ProductPricesDropdownsVm>();
+    }
+    #endregion
+}

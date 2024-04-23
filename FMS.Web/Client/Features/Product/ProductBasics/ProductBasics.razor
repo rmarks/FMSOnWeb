@@ -1,0 +1,278 @@
+﻿@inject HttpClient Http
+
+@if (_dropdowns is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm EditContext="@_editContext" OnValidSubmit="SaveForm">
+        <FluentValidationValidator />
+
+        <div class="row mb-3">
+            <div class="col-auto">
+                <div class="card" style="width: 268px;">
+                    <img class="card-img" src="@_imagePath">
+                </div>
+            </div>
+
+            <div class="col">
+                <FormSection>
+                    <FormFieldSet Width="col-2">
+                        <label class="font-weight-bold text-secondary">Kood</label>
+                        <InputText class="form-control" @bind-Value="@_editModel.Code" disabled="@IsInViewMode" />
+                        <ValidationMessage For="@(() => _editModel.Code)" />
+                    </FormFieldSet>
+                    <FormFieldSet Width="col-4">
+                        <label class="font-weight-bold text-secondary">Nimi</label>
+                        <InputText class="form-control" @bind-Value="@_editModel.Name" disabled="@IsInViewMode" />
+                        <ValidationMessage For="@(() => _editModel.Name)" />
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <FormSection>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Olek</label>
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductStatusId" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductStatuses)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => _editModel.ProductStatusId)" />
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Lähtetüüp</label>
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductSourceTypeId" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductSourceTypes)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => _editModel.ProductSourceTypeId)" />
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Sihttüüp</label>
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductDestinationTypeId" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductDestinationTypes)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => _editModel.ProductDestinationTypeId)" />
+                    </FormFieldSet>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Materjal</label>
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductMaterialId" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductMaterials)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => _editModel.ProductMaterialId)" />
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+
+            <div class="col-3">
+                <FormSection>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Tüüp</label>
+                        <InputSelect class="form-control" Value="@_editModel.ProductTypeId" ValueChanged="@((p) => HandleProductTypeChanged(p))"
+                                     ValueExpression="@(() => _editModel.ProductTypeId)" TValue="int" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductTypes)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => _editModel.ProductTypeId)" />
+                    </FormFieldSet>
+
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Grupp</label>
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductGroupId" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.GetFilteredProductGroups(_editModel.ProductTypeId))
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => _editModel.ProductGroupId)" />
+                    </FormFieldSet>
+
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Kaubamärk</label>
+                        <InputSelect class="form-control" Value="@_editModel.ProductBrandId" ValueChanged="@((p) => HandleProductBrandChanged(p))"
+                                     TValue="int" ValueExpression="@(() => _editModel.ProductBrandId)" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductBrands)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </InputSelect>
+                    </FormFieldSet>
+
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Kollektsioon</label>
+                        <InputSelect class="form-control" @bind-Value="@_editModel.ProductCollectionId" disabled="@IsInViewMode">
+                            <option value="0">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.GetFilteredProductCollections(_editModel.ProductBrandId))
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                        </InputSelect>
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+
+            <div class="col">
+                <FormSection>
+                    <label class="font-weight-bold text-secondary">Kommentaarid</label>
+                    <InputTextArea class="form-control" @bind-Value="@_editModel.Comments" rows="12" disabled="@IsInViewMode" />
+                </FormSection>
+            </div>
+        </div>
+
+        <div class="mt-4 pt-2 border-top">
+            <div class="row">
+                <div class="offset-4 col-8 text-right">
+                    <button class="btn btn-info" type="button" @onclick="@(() => _isInEditMode = true)" hidden="@_isInEditMode">Muuda</button>
+                    <button class="btn btn-secondary" type="button" @onclick="CancelFormEdit" hidden="@IsInViewMode">Loobu</button>
+                    <button class="btn btn-warning" type="submit" hidden="@IsInViewMode">Salvesta</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private ProductBasicsVm _initialModel = default!;
+    private ProductBasicsVm _editModel = new();
+    private EditContext? _editContext;
+    private ProductBasicsDropdownsVm? _dropdowns;
+    // private string _imagePath = "img/products/BlankImage.png";
+    private string _imagePath = "https://fmsimagesapi.azurewebsites.net/api/BlankImage";
+    private bool _isInEditMode = false;
+
+    [Parameter] public int Id { get; set; }
+    [Parameter] public EventCallback<int> IdChanged { get; set; }
+    [Parameter] public EventCallback OnAddingCancelled { get; set; }
+
+    private bool IsInViewMode => !_isInEditMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            var response = await Http.GetFromJsonAsync<GetProductBasicsRequest.Response>(GetProductBasicsRequest.RouteTemplate.Replace("{Id}", Id.ToString()))
+                ?? throw new Exception("Can't load product basics");
+
+            _initialModel = response.ProductBasics.Adapt<ProductBasicsVm>();
+
+            ResetEditForm(_initialModel);
+
+            // _imagePath = $"img/products/{_editModel.Code}.jpg";
+            _imagePath = $"https://fmsimagesapi.azurewebsites.net/api/{_editModel.Code}";
+        }
+        else
+        {
+            ResetEditForm(new ProductBasicsVm());
+            _isInEditMode = true;
+        }
+
+        var response2 = await Http.GetFromJsonAsync<GetPBDropdownsRequest.Response>(GetPBDropdownsRequest.RouteTemplate)
+            ?? throw new Exception("Can't load product dropdowns");
+        _dropdowns = new();
+        _dropdowns.MapFromDictionary(response2.Dropdowns);
+    }
+
+    #region event handlers
+    private async Task CancelFormEdit()
+    {
+        if (Id == 0)
+        {
+            await OnAddingCancelled.InvokeAsync();
+        }
+        else
+        {
+            _isInEditMode = false;
+            ResetEditForm(_initialModel);
+        }
+    }
+
+    private async Task SaveForm()
+    {
+        if (Id == 0)
+        {
+            var httpResponse = await Http.PostAsJsonAsync<AddProductBasicsRequest>(
+                AddProductBasicsRequest.RouteTemplate, 
+                new AddProductBasicsRequest(_editModel.Adapt<ProductBasicsDto>()));
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var response = await httpResponse.Content.ReadFromJsonAsync<AddProductBasicsRequest.Response>();
+                if (response is not null)
+                {
+                    _editModel.Id = response.Id;
+                    ResetEditForm(_editModel);
+                    await IdChanged.InvokeAsync(_editModel.Id);
+                    return;
+                }
+
+                throw new Exception("Can't add product basics");
+            }
+        }
+        else
+        {
+            var httpResponse = await Http.PutAsJsonAsync<UpdateProductBasicsRequest>(
+                UpdateProductBasicsRequest.RouteTemplate.Replace("{Id}", Id.ToString()), 
+                new UpdateProductBasicsRequest(_editModel.Adapt<ProductBasicsDto>()));
+            
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                ResetEditForm(_editModel);
+                return;
+            }
+
+            throw new Exception("Can't save product basics");
+        }
+
+        _isInEditMode = false;
+    }
+
+    private void HandleProductTypeChanged(int id)
+    {
+        _editModel.ProductTypeId = id;
+        _editModel.ProductGroupId = default;
+
+        _editContext?.NotifyFieldChanged(_editContext.Field(nameof(_editModel.ProductGroupId)));
+    }
+
+    private void HandleProductBrandChanged(int id)
+    {
+        _editModel.ProductBrandId = id;
+        _editModel.ProductCollectionId = default;
+
+        _editContext?.NotifyFieldChanged(_editContext.Field(nameof(_editModel.ProductCollectionId)));
+    }
+    #endregion
+
+    #region helpers
+    private void ResetEditForm(ProductBasicsVm sourceModel)
+    {
+        if (sourceModel is null) return;
+
+        _editModel = sourceModel with { };
+        _editContext = new EditContext(_editModel);
+    }
+    #endregion
+}

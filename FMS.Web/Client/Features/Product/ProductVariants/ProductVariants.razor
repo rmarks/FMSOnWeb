@@ -1,0 +1,83 @@
+﻿@inject HttpClient Http
+
+@if (_dropdowns is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="@_productBase">
+        <div class="row">
+            <div class="col-3">
+                <FormSection>
+                    <FormFieldSet>
+                        <label class="font-weight-bold text-secondary">Varianditüübid</label>
+                        <InputSelect class="form-control" @bind-Value="@_productBase.ProductVariantTypeId">
+                            <option value="">-- Vali ---</option>
+                            @foreach (var item in _dropdowns.ProductVariantTypes)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </InputSelect>
+                    </FormFieldSet>
+                </FormSection>
+            </div>
+
+            <div class="col-9">
+                <FormSection>
+                    <div class="row justify-content-center">
+                        <div class="col-2">
+                            <label class="font-weight-bold text-secondary">Kood</label>
+                        </div>
+                        <div class="col-5">
+                            <label class="font-weight-bold text-secondary">Nimi</label>
+                        </div>
+                    </div>
+                    @foreach (var product in _productBase.Products)
+                    {
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-2">
+                                <InputText class="form-control" @bind-Value="@product.Code" />
+                            </div>
+                            <div class="col-5">
+                                <InputText class="form-control" @bind-Value="@product.Name" />
+                            </div>
+                        </div>
+                    }
+                </FormSection>
+            </div>
+        </div>
+
+        <div class="mt-4 pt-2 border-top">
+            <div class="row">
+                <div class="offset-4 col-8 text-right">
+                    <button class="btn btn-outline-secondary" type="button" disabled>Loobu</button>
+                    <button class="btn btn-primary" type="submit" disabled>Salvesta</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private ProductVariantsVm _productBase = new ProductVariantsVm();
+    private ProductVariantsDropdownsVm? _dropdowns;
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            var response = await Http.GetFromJsonAsync<GetProductVariantsRequest.Response>(
+                GetProductVariantsRequest.RouteTemplate.Replace("{id}", Id.ToString()))
+                ?? throw new Exception("Can't load product variants");
+
+            _productBase = response.Adapt<ProductVariantsVm>();
+        }
+
+        var response2 = await Http.GetFromJsonAsync<GetPVDropdownsRequest.Response>(GetPVDropdownsRequest.RouteTemplate);
+
+        _dropdowns = response2?.Adapt<ProductVariantsDropdownsVm>();
+    }
+}

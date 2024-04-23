@@ -1,14 +1,12 @@
 ﻿using FastEndpoints;
-using FMS.Application;
 using FMS.DAL;
-using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 
 var builder = WebApplication.CreateBuilder();
 
 builder.Services.AddControllers();
 builder.Services.AddFastEndpoints();
 
-builder.Services.AddApplication();
+builder.Services.AddDAL();
 
 // for local Production mode
 // https://stackoverflow.com/questions/75029227/blazor-pages-displaying-incorrectly-in-production-mode

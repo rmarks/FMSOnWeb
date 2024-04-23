@@ -1,6 +1,5 @@
 using FMS.Web.Client;
 using FMS.Web.Client.Features.Shared;
-using FMS.Web.Shared;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System.Reflection;
@@ -15,7 +14,6 @@ builder.Services.AddHttpClient("FMS.Web.ServerAPI", client => client.BaseAddress
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FMS.Web.ServerAPI"));
 
 builder.Services.AddMediatR(conf => conf.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly(), Assembly.GetAssembly(typeof(SharedAssemblyMarker)));
 
 builder.Services.AddSingleton<AppStateManager>();
 

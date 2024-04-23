@@ -16,4 +16,8 @@
 		<ProjectReference Include="..\FMS.Web\Shared\FMS.Web.Shared.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Product\" />
+	</ItemGroup>
+
 </Project>

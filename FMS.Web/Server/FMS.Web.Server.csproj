@@ -9,11 +9,12 @@
 	<ItemGroup>
 		<PackageReference Include="Ardalis.ApiEndpoints" Version="3.1.0" />
 		<PackageReference Include="FastEndpoints" Version="5.24.0" />
+		<PackageReference Include="Mapster" Version="7.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.18" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\FMS.Application\FMS.Application.csproj" />
+		<ProjectReference Include="..\..\FMS.DAL\FMS.DAL.csproj" />
 		<ProjectReference Include="..\Client\FMS.Web.Client.csproj" />
 		<ProjectReference Include="..\Shared\FMS.Web.Shared.csproj" />
 	</ItemGroup>
